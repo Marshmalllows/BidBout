@@ -4,17 +4,22 @@ import Input from "./Input.tsx";
 function LoginCard() {
   return (
     <div className="z-1 flex flex-col bg-white p-6 justify-center shadow-md border-1 border-gray-300 rounded-xs w-80 sm:w-120">
-      <h1 className="text-center text-3xl font-bold mb-8">BidBout</h1>
-      <p className="my-2 italic text-lg">Enter your login info</p>
-      <Input placeholder="Email..." />
-      <Input placeholder="Password..." type="password" />
+      <h1 className="text-center text-3xl font-bold mb-6 yeseva">BidBout</h1>
+      <p className="mb-4 noto text-lg">Enter your login info</p>
+      <Input variant="form" placeholder="Email..." />
+      <Input variant="form" placeholder="Password..." type="password" />
       <Button>Log in</Button>
-      <div className="flex justify-between gap-4">
-        <Button variant="secondary">Register</Button>
-        <Button variant="secondary">Forgot password</Button>
-      </div>
-      <p className="mt-2 mb-12 italic text-md">
-        Don`t have an account? Create one!
+      <p className="my-2 text-base italic noto">
+        Don`t have an account?{" "}
+        <a href="https://halyamov.vercel.app/" className="underline">
+          Create one!
+        </a>
+      </p>
+      <p className="mt-2 mb-12 text-base italic noto text-end">
+        Forgot your password?{" "}
+        <a href="https://halyamov.vercel.app/" className="underline">
+          Not a problem!
+        </a>
       </p>
     </div>
   );
