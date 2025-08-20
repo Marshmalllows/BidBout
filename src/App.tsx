@@ -1,7 +1,7 @@
-import MainPage from "./Pages/MainPage.tsx";
+import LotDetailsPage from "./Pages/LotDetailsPage.tsx";
 
 function App() {
-  return <MainPage />;
+  return <LotDetailsPage />;
 }
 
 export default App;

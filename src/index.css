@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Noto+Serif+Display:ital,wght@0,100..900;1,100..900&family=Yeseva+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Noto+Serif+Display:ital,wght@0,100..900;1,100..900&family=Yeseva+One&family=Lora:ital,wght@0,700;1,700&display=swap');
 @import "tailwindcss";
 
 .yeseva {
@@ -22,4 +22,11 @@
 
 .primary-container {
     @apply max-w-[1600px] w-full mx-auto
+}
+
+.lora {
+    font-family: "Lora", serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
 }

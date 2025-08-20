@@ -2,11 +2,18 @@ import { type ComponentProps, useState } from "react";
 
 type InputProps = ComponentProps<"input"> & {
   placeholder?: string;
-  type?: "text" | "password" | "number" | "date";
+  type?: "text" | "password" | "number" | "date" | "search";
   customClasses?: string;
+  font?: string;
 };
 
-function Input({ placeholder, type, customClasses, ...props }: InputProps) {
+function Input({
+  placeholder,
+  type,
+  customClasses,
+  font,
+  ...props
+}: InputProps) {
   const [isVisible, setVisibility] = useState(false);
 
   function handleShowPasswordButton() {
@@ -24,7 +31,7 @@ function Input({ placeholder, type, customClasses, ...props }: InputProps) {
           "[&::-webkit-inner-spin-button]:appearance-none\n" +
           "    [&::-webkit-outer-spin-button]:appearance-none\n" +
           "    [&::-moz-appearance]:textfield" +
-          `bg-gray-200 noto w-full p-3 pl-5 my-2 focus:outline-gray-500 peer outline-none` +
+          `bg-gray-200 ${font ?? "noto"} w-full p-3 pl-5 my-2 focus:outline-gray-500 peer outline-none` +
           ` ${customClasses}`
         }
         onInput={(e) => {
@@ -36,9 +43,9 @@ function Input({ placeholder, type, customClasses, ...props }: InputProps) {
       />
       <label
         htmlFor={placeholder + "Id"}
-        className="absolute noto left-5 text-gray-500 cursor-text -top-2 peer-focus:left-0
+        className={`absolute ${font ?? "noto"} left-5 text-gray-500 cursor-text -top-2 peer-focus:left-0
         not-peer-placeholder-shown:left-0 peer-focus:text-sm not-peer-placeholder-shown:text-sm peer-focus:-top-2
-        transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-black -translate-y-1/2"
+        transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-black -translate-y-1/2`}
       >
         {placeholder}
       </label>
@@ -46,9 +53,27 @@ function Input({ placeholder, type, customClasses, ...props }: InputProps) {
   ) : type === "date" ? (
     <input
       type={type}
-      className="bg-white noto px-5 py-3 min-h-12 cursor-pointer transition-all outline-none"
+      className={`bg-white ${font ?? "noto"} px-5 py-3 min-h-12 cursor-pointer transition-all outline-none`}
       {...props}
     />
+  ) : type === "search" ? (
+    <div className="flex flex-col relative w-full transition-all">
+      <input
+        type="text"
+        placeholder={placeholder}
+        className={`bg-white px-5 py-3 outline-none ${font ?? "noto"} pl-12`}
+        {...props}
+      />
+      <button
+        className={`absolute left-3 top-3 transition-all hover:bg-gray-200 rounded-sm p-px`}
+      >
+        <img
+          alt="magnifying-glass"
+          src="public/Icons/magnifying-glass.svg"
+          className="w-6 h-6"
+        />
+      </button>
+    </div>
   ) : (
     <div className="relative my-2 w-full transition-all">
       <input
@@ -57,7 +82,7 @@ function Input({ placeholder, type, customClasses, ...props }: InputProps) {
         type={type === "password" ? (isVisible ? "text" : "password") : type}
         placeholder=""
         className={
-          `bg-gray-200 noto w-full p-3 pl-5 my-2 focus:outline-gray-500 peer outline-none` +
+          `bg-gray-200 ${font ?? "noto"} w-full p-3 pl-5 my-2 focus:outline-gray-500 peer outline-none` +
           ` ${customClasses}`
         }
         {...props}
@@ -76,9 +101,9 @@ function Input({ placeholder, type, customClasses, ...props }: InputProps) {
       </button>
       <label
         htmlFor={placeholder + "Id"}
-        className="absolute noto left-5 text-gray-500 cursor-text -top-2 peer-focus:left-0
-        not-peer-placeholder-shown:left-0 peer-focus:text-sm not-peer-placeholder-shown:text-sm peer-focus:-top-2
-        transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-black -translate-y-1/2"
+        className={`absolute ${font ?? "noto"} left-5 text-gray-500 cursor-text -top-2 peer-focus:left-0
+            not-peer-placeholder-shown:left-0 peer-focus:text-sm not-peer-placeholder-shown:text-sm peer-focus:-top-2
+            transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-black -translate-y-1/2`}
       >
         {placeholder}
       </label>
