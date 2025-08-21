@@ -1,8 +1,13 @@
 import SelectItem from "./SelectItem.tsx";
 import { useState, useRef, useEffect } from "react";
 
-function Select() {
-  const [selectedItem, setSelectedItem] = useState("Select category...");
+interface SelectProps {
+  placeholder?: string;
+  customClasses?: string;
+}
+
+function Select({ placeholder, customClasses }: SelectProps) {
+  const [selectedItem, setSelectedItem] = useState(placeholder);
   const [isVisible, setVisibility] = useState(false);
   const items = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
@@ -36,7 +41,7 @@ function Select() {
     <div ref={selectRef} className="relative noto w-full">
       <button
         onClick={handleShowSelectItems}
-        className="w-full text-start transition-all bg-white p-3 pl-5 focus:outline-1 focus:outline-gray-400 hover:cursor-pointer"
+        className={`w-full text-start transition-all bg-white p-3 h-12 pl-5 focus:outline-1 focus:outline-gray-400 hover:cursor-pointer ${customClasses}`}
       >
         {selectedItem}
       </button>

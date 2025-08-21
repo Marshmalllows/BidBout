@@ -1,7 +1,7 @@
-import ProfileSettingsPage from "./Pages/ProfileSettingsPage.tsx";
+import LotSettingsPage from "./Pages/LotSettingsPage.tsx";
 
 function App() {
-  return <ProfileSettingsPage />;
+  return <LotSettingsPage />;
 }
 
 export default App;

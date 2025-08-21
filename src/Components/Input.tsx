@@ -43,7 +43,7 @@ function Input({
       />
       <label
         htmlFor={placeholder + "Id"}
-        className={`absolute ${font ?? "noto"} left-5 text-gray-500 cursor-text -top-2 peer-focus:left-0
+        className={`absolute ${font ?? "noto"} left-5 cursor-text -top-2 peer-focus:left-0
         not-peer-placeholder-shown:left-0 peer-focus:text-sm not-peer-placeholder-shown:text-sm peer-focus:-top-2
         transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-black -translate-y-1/2`}
       >
@@ -51,11 +51,13 @@ function Input({
       </label>
     </div>
   ) : type === "date" ? (
-    <input
-      type={type}
-      className={`bg-white ${font ?? "noto"} px-5 py-3 min-h-12 cursor-pointer transition-all outline-none`}
-      {...props}
-    />
+    <div className="w-full">
+      <input
+        type={type}
+        className={`bg-white ${font ?? "noto"} px-5 py-3 min-h-12 cursor-pointer transition-all w-full h-12 outline-none ${customClasses}`}
+        {...props}
+      />
+    </div>
   ) : type === "search" ? (
     <div className="flex flex-col relative w-full transition-all">
       <input
@@ -101,7 +103,7 @@ function Input({
       </button>
       <label
         htmlFor={placeholder + "Id"}
-        className={`absolute ${font ?? "noto"} left-5 text-gray-500 cursor-text -top-2 peer-focus:left-0
+        className={`absolute ${font ?? "noto"} left-5 cursor-text -top-2 peer-focus:left-0
             not-peer-placeholder-shown:left-0 peer-focus:text-sm not-peer-placeholder-shown:text-sm peer-focus:-top-2
             transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-black -translate-y-1/2`}
       >
