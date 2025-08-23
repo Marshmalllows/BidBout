@@ -73,7 +73,7 @@ export default function ImageUploader() {
         <p className="mb-3">Drag and drop images here or</p>
         <label
           htmlFor="fileInput"
-          className="border border-gray-400 py-3 px-3 bg-white text-sm sm:text-base text-black shadow
+          className="border border-gray-400 py-3 px-3 bg-white text-sm sm:text-base text-black shadow-sm
           hover:bg-gray-200 hover:border-gray-500 transition cursor-pointer"
         >
           Choose files

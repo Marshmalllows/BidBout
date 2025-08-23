@@ -1,7 +1,9 @@
 import Input from "./Input.tsx";
-import Button from "./Button.tsx";
+import DropdownMenu from "./DropdownMenu.tsx";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
+  const navigate = useNavigate();
   return (
     <div className="bg-gray-300 w-full">
       <div className="primary-container py-2 items-center grid grid-cols-[300px_1fr_300px]">
@@ -12,8 +14,26 @@ function Header() {
           customClasses="bg-white"
         />
         <div className="flex w-full justify-between gap-4 px-[20%]">
-          <Button variant="borderless">Sell</Button>
-          <Button variant="borderless">Profile</Button>
+          <DropdownMenu
+            placeholder="Sell"
+            options={[
+              { label: "My Lots", onClick: () => navigate("/") },
+              {
+                label: "Create Lot",
+                onClick: () => navigate("/lot-settings"),
+              },
+            ]}
+          />
+          <DropdownMenu
+            placeholder="Profile"
+            options={[
+              { label: "Login", onClick: () => navigate("/login") },
+              {
+                label: "Register",
+                onClick: () => navigate("/register"),
+              },
+            ]}
+          />
         </div>
       </div>
     </div>
