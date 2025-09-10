@@ -95,9 +95,7 @@ function Input({
       >
         <img
           alt="eye"
-          src={
-            isVisible ? "public/Icons/eye.svg" : "public/Icons/eye-slash.svg"
-          }
+          src={isVisible ? "/Icons/eye.svg" : "/Icons/eye-slash.svg"}
           className="w-6 h-6"
         />
       </button>

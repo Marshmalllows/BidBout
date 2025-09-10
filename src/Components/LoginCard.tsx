@@ -4,6 +4,7 @@ import Button from "./Button.tsx";
 import Input from "./Input.tsx";
 import { useAuth } from "../Hooks/UseAuth.tsx";
 import { useAxios } from "../API/AxiosInstance.ts";
+import axios from "axios";
 
 function LoginCard() {
   const navigate = useNavigate();
@@ -18,29 +19,31 @@ function LoginCard() {
       setError("Email and password are required");
       return;
     }
-    console.log("Sending login request with:", {
-      Email: email,
-      Password: password,
-    });
+
     try {
       setError(null);
       const response = await axiosInstance.post(
         "/auth/login",
-        { Email: email, Password: password }, // Використовуємо Email і Password
-        { headers: { Authorization: "" } }, // Вимикаємо Authorization
+        { Email: email, Password: password },
+        { headers: { Authorization: "" } },
       );
       const { token, user } = response.data;
       login(user, token);
       navigate("/");
-    } catch (err: any) {
-      console.error("Login error:", {
-        status: err.response?.status,
-        data: err.response?.data,
-        message: err.message,
-      });
-      setError(
-        err.response?.data?.message || "Login failed. Please try again.",
-      );
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        console.error("Login error:", {
+          status: err.response?.status,
+          data: err.response?.data,
+          message: err.message,
+        });
+        setError(
+          err.response?.data?.message || "Login failed. Please try again",
+        );
+      } else {
+        console.error("Unexpected error:", err);
+        setError("Something went wrong");
+      }
     }
   };
 
@@ -48,7 +51,6 @@ function LoginCard() {
     <div className="z-1 flex flex-col bg-white p-6 justify-center shadow-md border-1 border-gray-300 rounded-xs w-80 sm:w-120">
       <h1 className="text-center text-3xl font-bold mb-8 yeseva">BidBout</h1>
       <p className="mb-2 noto text-lg">Enter your login info</p>
-      {error && <p className="text-red-500 text-sm mb-2 noto">{error}</p>}
       <Input
         placeholder="Email..."
         type="text"
@@ -64,6 +66,7 @@ function LoginCard() {
       <Button customClasses="mb-4" onClick={handleLogin}>
         Log in
       </Button>
+      {error && <p className="text-red-600 mb-2 noto">{error}</p>}
       <p className="my-2 sm:text-base text-sm italic noto">
         Don`t have an account?{" "}
         <a

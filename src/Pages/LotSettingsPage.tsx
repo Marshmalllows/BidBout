@@ -27,17 +27,14 @@ function LotSettingsPage() {
           </div>
           <TextArea placeholder="Description" customClasses="bg-white" />
           <h3 className="yeseva noto text-2xl">Auction settings</h3>
-          <div className="flex gap-2 my-2">
-            <Input
-              type="date"
-              placeholder="Starting date"
-              customClasses="bg-white mt-4"
-            />
+          <div className="flex gap-2 my-2 relative">
+            <Input type="date" customClasses="bg-white mt-4" />
             <Input
               type="number"
               placeholder="Duration (days)"
               customClasses="bg-white"
             />
+            <label className={"noto absolute -top-3"}>Starting date</label>
           </div>
           <Input
             type="number"

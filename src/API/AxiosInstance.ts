@@ -1,7 +1,7 @@
 import axios, { type AxiosRequestConfig } from "axios";
 import { useAuth } from "../Hooks/UseAuth.tsx";
 
-const baseURL = "http://localhost:5148/api";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const useAxios = () => {
   const { token, login, logout, user } = useAuth();
@@ -35,9 +35,11 @@ export const useAxios = () => {
         }
 
         try {
-          const refreshResponse = await instance.post("/auth/refresh", {
-            accessToken: token,
-          });
+          const refreshResponse = await instance.post(
+            "/auth/refresh",
+            {},
+            { withCredentials: true },
+          );
 
           const newToken = refreshResponse.data.token;
           login(user, newToken);

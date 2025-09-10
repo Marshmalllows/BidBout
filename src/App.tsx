@@ -5,8 +5,15 @@ import LotSettingsPage from "./Pages/LotSettingsPage.tsx";
 import ProfileSettingsPage from "./Pages/ProfileSettingsPage.tsx";
 import LotDetailsPage from "./Pages/LotDetailsPage.tsx";
 import RegisterPage from "./Pages/RegisterPage.tsx";
+import { useAutoLogin } from "./Hooks/useAutoLogin.tsx";
 
 function App() {
+  const loading = useAutoLogin();
+
+  if (loading) {
+    return <div>Loading...</div>; // або спіннер
+  }
+
   return (
     <div>
       <Routes>
