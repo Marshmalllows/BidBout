@@ -28,7 +28,12 @@ function Header() {
   return (
     <div className="bg-gray-300 w-full">
       <div className="primary-container py-2 items-center grid grid-cols-[300px_1fr_300px]">
-        <h1 className="text-center text-3xl font-bold yeseva">BidBout</h1>
+        <h1
+          className="text-center text-3xl font-bold yeseva cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          BidBout
+        </h1>
         <Input
           type="search"
           placeholder="Search here..."

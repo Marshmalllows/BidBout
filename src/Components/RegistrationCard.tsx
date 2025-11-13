@@ -5,6 +5,7 @@ import { useAuth } from "../Hooks/UseAuth.tsx";
 import { useAxios } from "../API/AxiosInstance.ts";
 import { useState } from "react";
 import axios from "axios";
+import * as UAParser from "ua-parser-js";
 
 function RegistrationCard() {
   const navigate = useNavigate();
@@ -29,15 +30,32 @@ function RegistrationCard() {
     try {
       setError(null);
 
+      const parser = new UAParser.UAParser();
+      const device = parser.getResult();
+
+      const deviceInfo = {
+        deviceType: device.device.type || "desktop",
+        browser: device.browser.name || "unknown",
+        os: device.os.name || "unknown",
+      };
+
       await axiosInstance.post(
         "/auth/register",
-        { Email: email, Password: password },
+        {
+          Email: email,
+          Password: password,
+          ...deviceInfo,
+        },
         { headers: { Authorization: "" } },
       );
 
       const loginResponse = await axiosInstance.post(
         "/auth/login",
-        { Email: email, Password: password },
+        {
+          Email: email,
+          Password: password,
+          ...deviceInfo,
+        },
         { headers: { Authorization: "" } },
       );
 
@@ -69,7 +87,12 @@ function RegistrationCard() {
 
   return (
     <div className="z-1 flex flex-col bg-white p-6 justify-center shadow-md border-1 border-gray-300 rounded-xs w-80 sm:w-120">
-      <h1 className="text-center text-3xl font-bold mb-8 yeseva">BidBout</h1>
+      <h1
+        className="text-center text-3xl font-bold mb-8 yeseva cursor-pointer"
+        onClick={() => navigate("/")}
+      >
+        BidBout
+      </h1>
       <p className="mb-2 noto text-lg">Enter your info</p>
       <Input
         placeholder="Email..."

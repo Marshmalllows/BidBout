@@ -71,7 +71,7 @@ function Input({
       >
         <img
           alt="magnifying-glass"
-          src="public/Icons/magnifying-glass.svg"
+          src="/Icons/magnifying-glass.svg"
           className="w-6 h-6"
         />
       </button>
