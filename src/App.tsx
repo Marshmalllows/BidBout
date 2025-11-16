@@ -22,7 +22,7 @@ function App() {
         <Route path="register" element={<RegisterPage />} />
         <Route path="/lot-settings" element={<LotSettingsPage />} />
         <Route path="/profile-settings" element={<ProfileSettingsPage />} />
-        <Route path="/lot-details" element={<LotDetailsPage />} />
+        <Route path="/lot/:id" element={<LotDetailsPage />} />
       </Routes>
     </div>
   );

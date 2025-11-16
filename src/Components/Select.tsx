@@ -4,12 +4,12 @@ import { useState, useRef, useEffect } from "react";
 interface SelectProps {
   placeholder?: string;
   customClasses?: string;
+  items: string[];
 }
 
-function Select({ placeholder, customClasses }: SelectProps) {
+function Select({ placeholder, customClasses, items }: SelectProps) {
   const [selectedItem, setSelectedItem] = useState(placeholder);
   const [isVisible, setVisibility] = useState(false);
-  const items = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
   const selectRef = useRef<HTMLDivElement>(null);
 
