@@ -12,6 +12,10 @@ type LotResponse = {
     id: number;
     name: string;
   };
+  images: {
+    id: number;
+    imageData: string;
+  }[];
 };
 
 function MainPage() {

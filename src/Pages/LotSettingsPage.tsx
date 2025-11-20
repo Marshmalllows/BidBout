@@ -4,8 +4,75 @@ import Button from "../Components/Button.tsx";
 import Select from "../Components/Select.tsx";
 import TextArea from "../Components/TextArea.tsx";
 import ImageUploader from "../Components/ImageUploader.tsx";
+import { useAxios } from "../API/AxiosInstance.ts";
+import { useEffect, useState } from "react";
+
+type CategoryResponse = {
+  id: number;
+  name: string;
+};
 
 function LotSettingsPage() {
+  const axiosAuth = useAxios(true);
+  const axiosGuest = useAxios(false);
+
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState<CategoryResponse | undefined>();
+  const [pickupPlace, setPickupPlace] = useState("");
+  const [description, setDescription] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [duration, setDuration] = useState("");
+  const [reservePrice, setReservePrice] = useState("");
+  const [images, setImages] = useState<File[]>([]);
+
+  const [categories, setCategories] = useState<CategoryResponse[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axiosGuest.get("/categories");
+        const formatted: CategoryResponse[] = res.data.map(
+          (c: CategoryResponse) => ({ id: c.id, name: c.name }),
+        );
+        setCategories(formatted);
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+      }
+    };
+
+    fetchCategories();
+  }, [axiosGuest]);
+
+  const handleSubmit = async () => {
+    if (!category) {
+      alert("Please select a category");
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append("title", title);
+    fd.append("categoryId", category.id.toString());
+    fd.append("pickupPlace", pickupPlace);
+    fd.append("description", description);
+    fd.append("startDate", startDate);
+    fd.append("duration", duration);
+    fd.append("reservePrice", reservePrice);
+
+    images.forEach((img) => fd.append("images", img));
+
+    try {
+      await axiosAuth.post("/lots", fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+
+      alert("Lot created!");
+    } catch (e) {
+      console.error(e);
+      alert("Error creating lot");
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Header />
@@ -20,30 +87,62 @@ function LotSettingsPage() {
               type="text"
               placeholder="Item name"
               customClasses="bg-white"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
             <div className="mt-4 w-full">
-              <Select placeholder="Select category" />
+              <Select
+                placeholder="Select category..."
+                items={categories}
+                value={category}
+                onChange={(value) => setCategory(value)}
+              />
             </div>
           </div>
-          <TextArea placeholder="Description" customClasses="bg-white" />
+          <Input
+            type="text"
+            placeholder="Pick-up place"
+            customClasses="bg-white w-1/2"
+            value={pickupPlace}
+            onChange={(e) => setPickupPlace(e.target.value)}
+          />
+          <TextArea
+            placeholder="Description"
+            customClasses="bg-white"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
           <h3 className="yeseva noto text-2xl">Auction settings</h3>
           <div className="flex gap-2 my-2 relative">
-            <Input type="date" customClasses="bg-white mt-4" />
+            <Input
+              type="date"
+              customClasses="bg-white mt-4"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
             <Input
               type="number"
               placeholder="Duration (days)"
               customClasses="bg-white"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
             />
-            <label className={"noto absolute -top-3"}>Starting date</label>
+            <label className="noto absolute -top-3">Starting date</label>
           </div>
           <Input
             type="number"
-            placeholder="Minimum bet"
+            placeholder="Reserve price"
             customClasses="bg-white w-1/2"
+            value={reservePrice}
+            onChange={(e) => setReservePrice(e.target.value)}
           />
           <h3 className="yeseva noto text-2xl mb-4">Images</h3>
-          <ImageUploader />
-          <Button customClasses="my-4" variant="secondary">
+          <ImageUploader onFilesChange={setImages} />
+          <Button
+            customClasses="my-4"
+            variant="secondary"
+            onClick={handleSubmit}
+          >
             Apply changes
           </Button>
         </div>

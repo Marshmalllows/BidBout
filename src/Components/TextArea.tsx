@@ -30,7 +30,7 @@ function Textarea({
   }, [value]);
 
   return (
-    <div className="relative my-4 w-full transition-all">
+    <div className="relative my-6 w-full transition-all">
       <textarea
         id={placeholder + "Id"}
         name={placeholder}

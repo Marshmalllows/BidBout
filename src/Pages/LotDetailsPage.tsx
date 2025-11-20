@@ -10,6 +10,7 @@ type LotResponse = {
   title: string;
   category: { name: string };
   reservePrice: number;
+  pickupPlace: string;
   description: string;
 };
 
@@ -59,7 +60,10 @@ function LotDetailsPage() {
           </div>
 
           <div className="sticky top-0 self-start">
-            <LotCard />
+            <LotCard
+              reservePrice={lot.reservePrice}
+              pickupPlace={lot.pickupPlace}
+            />
           </div>
         </div>
       </div>

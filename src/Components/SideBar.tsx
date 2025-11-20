@@ -11,14 +11,15 @@ type CategoryResponse = {
 
 function SideBar() {
   const axiosGuest = useAxios(false);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [category, setCategory] = useState<CategoryResponse | undefined>();
+  const [categories, setCategories] = useState<CategoryResponse[]>([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await axiosGuest.get("/categories");
-        const formatted: string[] = res.data.map(
-          (c: CategoryResponse) => c.name,
+        const formatted: CategoryResponse[] = res.data.map(
+          (c: CategoryResponse) => ({ id: c.id, name: c.name }),
         );
         setCategories(formatted);
       } catch (err) {
@@ -34,7 +35,12 @@ function SideBar() {
       <h2 className="text-2xl yeseva">Filters</h2>
 
       <h3 className="text-xl noto">Category</h3>
-      <Select placeholder="Select category..." items={categories} />
+      <Select
+        placeholder="Select category..."
+        items={categories}
+        value={category}
+        onChange={(value) => setCategory(value)}
+      />
 
       <h3 className="text-xl noto mt-2">Price</h3>
       <div className="flex gap-2">

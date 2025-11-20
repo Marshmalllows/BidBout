@@ -1,19 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-export default function ImageUploader() {
+interface ImageUploaderProps {
+  onFilesChange?: (files: File[]) => void;
+}
+
+function ImageUploader({ onFilesChange }: ImageUploaderProps) {
   const [previews, setPreviews] = useState<string[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const handleFiles = (files: FileList) => {
+  const MAX_FILES = 10;
+  const MAX_SIZE_MB = 10;
+
+  const handleFiles = (newFiles: FileList) => {
+    const validFiles: File[] = [];
     const newPreviews: string[] = [];
-    for (const file of Array.from(files)) {
+
+    for (const file of Array.from(newFiles)) {
       if (!file.type.startsWith("image/") || file.type === "image/gif") {
-        setError("You only can upload images!");
-      } else {
-        newPreviews.push(URL.createObjectURL(file));
+        setError("You can only upload images!");
+        continue;
       }
+
+      if (file.size / 1024 / 1024 > MAX_SIZE_MB) {
+        setError(`File "${file.name}" is too big (max ${MAX_SIZE_MB} MB).`);
+        continue;
+      }
+
+      if (files.length + validFiles.length >= MAX_FILES) {
+        setError(`You can upload up to ${MAX_FILES} images.`);
+        break;
+      }
+
+      validFiles.push(file);
+      newPreviews.push(URL.createObjectURL(file));
     }
-    if (newPreviews.length > 0) {
+
+    if (validFiles.length > 0) {
+      setFiles((prev) => {
+        const updatedFiles = [...prev, ...validFiles];
+        onFilesChange?.(updatedFiles);
+        return updatedFiles;
+      });
       setPreviews((prev) => [...prev, ...newPreviews]);
       setError(null);
     }
@@ -21,20 +49,25 @@ export default function ImageUploader() {
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    if (e.dataTransfer.files.length > 0) {
-      handleFiles(e.dataTransfer.files);
-    }
+    if (e.dataTransfer.files.length > 0) handleFiles(e.dataTransfer.files);
   };
 
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      handleFiles(e.target.files);
-    }
+    if (e.target.files) handleFiles(e.target.files);
   };
 
   const removeImage = (index: number) => {
+    setFiles((prev) => {
+      const updatedFiles = prev.filter((_, i) => i !== index);
+      onFilesChange?.(updatedFiles);
+      return updatedFiles;
+    });
     setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
+
+  useEffect(() => {
+    return () => previews.forEach((url) => URL.revokeObjectURL(url));
+  }, [previews]);
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
@@ -90,3 +123,5 @@ export default function ImageUploader() {
     </div>
   );
 }
+
+export default ImageUploader;

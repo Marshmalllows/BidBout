@@ -6,12 +6,13 @@ import ProfileSettingsPage from "./Pages/ProfileSettingsPage.tsx";
 import LotDetailsPage from "./Pages/LotDetailsPage.tsx";
 import RegisterPage from "./Pages/RegisterPage.tsx";
 import { useAutoLogin } from "./Hooks/useAutoLogin.tsx";
+import ProtectedRoute from "./Components/ProtectedRoute.tsx";
 
 function App() {
   const loading = useAutoLogin();
 
   if (loading) {
-    return <div>Loading...</div>; // або спіннер
+    return <div>Loading...</div>;
   }
 
   return (
@@ -19,10 +20,26 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="register" element={<RegisterPage />} />
-        <Route path="/lot-settings" element={<LotSettingsPage />} />
-        <Route path="/profile-settings" element={<ProfileSettingsPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/lot/:id" element={<LotDetailsPage />} />
+
+        <Route
+          path="/lot-settings"
+          element={
+            <ProtectedRoute>
+              <LotSettingsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile-settings"
+          element={
+            <ProtectedRoute>
+              <ProfileSettingsPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </div>
   );
