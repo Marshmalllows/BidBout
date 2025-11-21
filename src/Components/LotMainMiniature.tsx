@@ -11,11 +11,7 @@ interface LotMainMiniatureProps {
 }
 
 function LotMainMiniature({ lot }: LotMainMiniatureProps) {
-  // Перевіряємо, чи є хоча б одне зображення
-  const imageSrc =
-    lot.images.length > 0
-      ? `data:image/jpeg;base64,${lot.images[0].imageData}`
-      : "/placeholder.jpg"; // можна замінити на своє заглушкове зображення
+  const imageSrc = `data:image/jpeg;base64,${lot.images[0].imageData}`;
 
   return (
     <Link to={`/lot/${lot.id}`}>
