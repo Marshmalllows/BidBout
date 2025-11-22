@@ -7,12 +7,17 @@ import LotDetailsPage from "./Pages/LotDetailsPage.tsx";
 import RegisterPage from "./Pages/RegisterPage.tsx";
 import { useAutoLogin } from "./Hooks/useAutoLogin.tsx";
 import ProtectedRoute from "./Components/ProtectedRoute.tsx";
+import { Loader } from "./Components/Loader.tsx";
 
 function App() {
   const loading = useAutoLogin();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-screen h-screen flex items-center justify-center">
+        <Loader />{" "}
+      </div>
+    );
   }
 
   return (
@@ -26,7 +31,7 @@ function App() {
         <Route
           path="/lot-settings"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute loading={loading}>
               <LotSettingsPage />
             </ProtectedRoute>
           }
@@ -35,7 +40,7 @@ function App() {
         <Route
           path="/profile-settings"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute loading={loading}>
               <ProfileSettingsPage />
             </ProtectedRoute>
           }

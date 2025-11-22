@@ -6,6 +6,8 @@ import TextArea from "../Components/TextArea.tsx";
 import ImageUploader from "../Components/ImageUploader.tsx";
 import { useAxios } from "../API/AxiosInstance.ts";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 
 type CategoryResponse = {
   id: number;
@@ -25,7 +27,9 @@ function LotSettingsPage() {
   const [reservePrice, setReservePrice] = useState("");
   const [images, setImages] = useState<File[]>([]);
 
+  const navigate = useNavigate();
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
+  const [errors, setErrors] = useState<Record<string, unknown>>({});
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -45,7 +49,7 @@ function LotSettingsPage() {
 
   const handleSubmit = async () => {
     if (!category) {
-      alert("Please select a category");
+      setErrors({ ...errors, image: ["Select Category"] });
       return;
     }
 
@@ -58,19 +62,29 @@ function LotSettingsPage() {
     fd.append("duration", duration);
     fd.append("reservePrice", reservePrice);
 
+    if (images.length === 0) {
+      setErrors({ ...errors, image: ["Upload at least one image"] });
+      return;
+    }
+
     images.forEach((img) => fd.append("images", img));
 
-    try {
-      await axiosAuth.post("/lots", fd, {
+    await axiosAuth
+      .post("/lots", fd, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
+      })
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        const errorsValidated =
+          error instanceof AxiosError
+            ? error.response?.data.errors
+            : { message: JSON.stringify(error.message) };
+        console.log(errorsValidated);
+        setErrors(errorsValidated);
       });
-
-      alert("Lot created!");
-    } catch (e) {
-      console.error(e);
-      alert("Error creating lot");
-    }
   };
 
   return (
@@ -138,6 +152,15 @@ function LotSettingsPage() {
           />
           <h3 className="yeseva noto text-2xl mb-4">Images</h3>
           <ImageUploader onFilesChange={setImages} />
+          {Object.keys(errors).length > 0 && (
+            <div className="flex flex-col gap-0.5 mt-4">
+              {Object.values(errors).map((error) => {
+                if (error instanceof Array)
+                  return <p className="text-red-600">{error.join(", ")}</p>;
+                return <p className="text-red-600">{JSON.stringify(error)}</p>;
+              })}
+            </div>
+          )}
           <Button
             customClasses="my-4"
             variant="secondary"

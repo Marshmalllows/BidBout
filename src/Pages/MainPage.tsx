@@ -3,6 +3,7 @@ import SideBar from "../Components/SideBar.tsx";
 import LotMainMiniature from "../Components/LotMainMiniature.tsx";
 import { useAxios } from "../API/AxiosInstance.ts";
 import { useEffect, useState } from "react";
+import { useLotStore } from "../stores/lotsStore.ts";
 
 type LotResponse = {
   id: number;
@@ -21,11 +22,15 @@ type LotResponse = {
 function MainPage() {
   const axiosGuest = useAxios(false);
   const [lots, setLots] = useState<LotResponse[]>([]);
+  const { searchQuery } = useLotStore();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLots = async () => {
       try {
-        const res = await axiosGuest.get("/lots");
+        const res = await axiosGuest
+          .get("/lots")
+          .finally(() => setLoading(false));
         setLots(res.data);
       } catch (err) {
         console.error("Failed to fetch lots:", err);
@@ -35,17 +40,29 @@ function MainPage() {
     fetchLots();
   }, [axiosGuest]);
 
+  const filteredLots = lots.filter((lot) => lot.title.includes(searchQuery));
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Header />
-      <div className="flex flex-1 flex-row">
+      <div className="flex flex-1 flex-row w-full">
         <SideBar />
-        <div>
-          <h3 className="yeseva text-2xl m-4">Popular</h3>
-          <div className="mx-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {lots.map((lot) => (
-              <LotMainMiniature key={lot.id} lot={lot} />
-            ))}
+        <div className="m-4 w-full">
+          <h3 className="yeseva text-2xl mb-4">Popular</h3>
+
+          <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {loading
+              ? Array.from({ length: 8 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col bg-gray-200 p-2 hover:opacity-80 transition aspect-[7/8]"
+                  >
+                    <div className="object-cover bg-gray-300 aspect-square" />
+                  </div>
+                ))
+              : filteredLots.map((lot) => (
+                  <LotMainMiniature key={lot.id} lot={lot} />
+                ))}
           </div>
         </div>
       </div>

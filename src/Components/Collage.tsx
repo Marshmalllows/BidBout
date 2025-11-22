@@ -53,57 +53,63 @@ function Collage({ images }: CollageProps) {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="w-full h-96 overflow-hidden border border-gray-400">
+      <div className="h-96 w-full overflow-hidden border border-gray-400">
         <img
           src={imageSources[selectedIndex]}
           alt="product"
-          className="flex h-full w-full object-cover"
+          className="flex w-full h-full object-cover"
         />
       </div>
-      <div className="flex w-full items-center gap-2 mt-2 w-full max-w-md">
-        <button
-          onClick={handlePrev}
-          disabled={selectedIndex === 0}
-          className="p-2 bg-gray-200 disabled:opacity-50"
-        >
-          ◀
-        </button>
-
-        <div className="overflow-hidden w-full flex-1">
-          <div
-            ref={containerRef}
-            className="flex gap-2 w-full transition-transform duration-300"
+      <div className="flex items-center gap-2 mt-2 w-full">
+        {imageSources.length > 3 && (
+          <button
+            onClick={handlePrev}
+            disabled={selectedIndex === 0}
+            className="p-1 disabled:opacity-50 bold text-3xl"
           >
-            {imageSources.map((src, index) => (
-              <div
-                key={index}
-                className={`w-24 h-24 flex-shrink-0 border-2 cursor-pointer overflow-hidden ${
-                  selectedIndex === index
-                    ? "border-blue-500"
-                    : "border-gray-400"
-                }`}
-                onClick={() => {
-                  setSelectedIndex(index);
-                  updateStartIndex(index);
-                }}
-              >
-                <img
-                  src={src}
-                  alt={`product-${index}`}
-                  className="w-full h-full object-cover transition-transform duration-200 hover:scale-105"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+            {"<"}
+          </button>
+        )}
 
-        <button
-          onClick={handleNext}
-          disabled={selectedIndex === imageSources.length - 1}
-          className="p-2 bg-gray-200 disabled:opacity-50"
-        >
-          ▶
-        </button>
+        {imageSources.length > 1 && (
+          <div className="overflow-hidden w-full">
+            <div
+              ref={containerRef}
+              className="flex gap-2 transition-transform duration-300"
+            >
+              {imageSources.map((src, index) => (
+                <div
+                  key={index}
+                  className={`h-24 w-1/3 flex-shrink-0 border-2 cursor-pointer overflow-hidden ${
+                    selectedIndex === index
+                      ? "border-blue-500"
+                      : "border-gray-400"
+                  }`}
+                  onClick={() => {
+                    setSelectedIndex(index);
+                    updateStartIndex(index);
+                  }}
+                >
+                  <img
+                    src={src}
+                    alt={`product-${index}`}
+                    className="w-full h-full object-cover transition-transform duration-200 hover:scale-105"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {imageSources.length > 3 && (
+          <button
+            onClick={handleNext}
+            disabled={selectedIndex === imageSources.length - 1}
+            className="p-1 disabled:opacity-50 text-3xl bold"
+          >
+            {">"}
+          </button>
+        )}
       </div>
     </div>
   );

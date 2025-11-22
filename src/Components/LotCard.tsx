@@ -38,7 +38,7 @@ function LotCard({ reservePrice, pickupPlace, endDate }: LotCardProps) {
   }, [endDate]);
 
   return (
-    <div className="flex flex-col justify-start h-full mt-8">
+    <div className="flex flex-col justify-start h-full">
       <h2 className="noto ml-2 mb-2 text-xl">Closes in: {timeLeft}</h2>
       <div className="flex flex-col bg-white p-6 shadow-md border-1 border-gray-300 rounded-xs w-100 min-h-full gap-2">
         <h3 className="noto italic text-lg">Current bid</h3>
