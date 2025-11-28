@@ -1,13 +1,42 @@
 import { create } from "zustand";
 
-export interface LotStore {
+export interface LotFilters {
   searchQuery: string;
-  setSearchQuery(query: string): void;
+  categoryId: number | null;
+  minPrice: string;
+  maxPrice: string;
+  startDate: string;
+  endDate: string;
+  status: number;
+  sortBy: number;
+}
+
+interface LotStore extends LotFilters {
+  setFilters: (filters: Partial<LotFilters>) => void;
+  resetFilters: () => void;
 }
 
 export const useLotStore = create<LotStore>((set) => ({
   searchQuery: "",
+  categoryId: null,
+  minPrice: "",
+  maxPrice: "",
+  startDate: "",
+  endDate: "",
+  status: 0,
+  sortBy: 0,
 
-  setSearchQuery: (newSearchQuery: string) =>
-    set({ searchQuery: newSearchQuery }),
+  setFilters: (newFilters) => set((state) => ({ ...state, ...newFilters })),
+
+  resetFilters: () =>
+    set({
+      searchQuery: "",
+      categoryId: null,
+      minPrice: "",
+      maxPrice: "",
+      startDate: "",
+      endDate: "",
+      status: 0,
+      sortBy: 0,
+    }),
 }));

@@ -3,58 +3,191 @@ import Select from "./Select.tsx";
 import Input from "./Input.tsx";
 import Button from "./Button.tsx";
 import { useAxios } from "../API/AxiosInstance.ts";
+import { useSearchParams } from "react-router-dom";
 
 type CategoryResponse = {
   id: number;
   name: string;
 };
 
+interface ApiCategory {
+  id: number;
+  name: string;
+}
+
+const statusOptions = [
+  { id: 0, name: "All Statuses" },
+  { id: 1, name: "Active" },
+  { id: 2, name: "Upcoming" },
+  { id: 3, name: "Closed" },
+];
+
 function SideBar() {
   const axiosGuest = useAxios(false);
-  const [category, setCategory] = useState<CategoryResponse | undefined>();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
+
+  const [localCategory, setLocalCategory] = useState<
+    CategoryResponse | undefined
+  >();
+  const [localStatus, setLocalStatus] = useState<
+    CategoryResponse | undefined
+  >();
+
+  const [localMinPrice, setLocalMinPrice] = useState(
+    searchParams.get("minPrice") || "",
+  );
+  const [localMaxPrice, setLocalMaxPrice] = useState(
+    searchParams.get("maxPrice") || "",
+  );
+  const [localStart, setLocalStart] = useState(
+    searchParams.get("startDate") || "",
+  );
+  const [localEnd, setLocalEnd] = useState(searchParams.get("endDate") || "");
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await axiosGuest.get("/categories");
         const formatted: CategoryResponse[] = res.data.map(
-          (c: CategoryResponse) => ({ id: c.id, name: c.name }),
+          (c: ApiCategory) => ({ id: c.id, name: c.name }),
         );
-        setCategories(formatted);
+        const allCategories = [{ id: 0, name: "All Categories" }, ...formatted];
+        setCategories(allCategories);
       } catch (err) {
         console.error("Failed to fetch categories:", err);
       }
     };
-
     fetchCategories();
   }, [axiosGuest]);
 
+  useEffect(() => {
+    setLocalMinPrice(searchParams.get("minPrice") || "");
+    setLocalMaxPrice(searchParams.get("maxPrice") || "");
+    setLocalStart(searchParams.get("startDate") || "");
+    setLocalEnd(searchParams.get("endDate") || "");
+
+    const urlStatus = searchParams.get("status");
+    if (urlStatus) {
+      const found = statusOptions.find((s) => s.id === Number(urlStatus));
+      setLocalStatus(found); // Якщо знайдено - ставимо статус
+    } else {
+      setLocalStatus(undefined); // Якщо в URL немає - скидаємо в undefined (покажеться placeholder)
+    }
+
+    const urlCatId = searchParams.get("categoryId");
+    if (categories.length > 0) {
+      if (urlCatId) {
+        const found = categories.find((c) => c.id === Number(urlCatId));
+        setLocalCategory(found);
+      } else {
+        setLocalCategory(undefined);
+      }
+    }
+  }, [searchParams, categories]);
+
+  const handleApplyFilters = () => {
+    const newParams = new URLSearchParams(searchParams);
+
+    if (localCategory && localCategory.id !== 0) {
+      newParams.set("categoryId", localCategory.id.toString());
+    } else {
+      newParams.delete("categoryId");
+    }
+
+    if (localStatus && localStatus.id !== 0) {
+      newParams.set("status", localStatus.id.toString());
+    } else {
+      newParams.delete("status");
+    }
+
+    if (localMinPrice) newParams.set("minPrice", localMinPrice);
+    else newParams.delete("minPrice");
+
+    if (localMaxPrice) newParams.set("maxPrice", localMaxPrice);
+    else newParams.delete("maxPrice");
+
+    if (localStart) newParams.set("startDate", localStart);
+    else newParams.delete("startDate");
+
+    if (localEnd) newParams.set("endDate", localEnd);
+    else newParams.delete("endDate");
+
+    setSearchParams(newParams);
+  };
+
   return (
-    <div className="flex flex-1 flex-col min-h-full min-w-[300px] max-w-[300px] bg-gray-200 p-8 gap-2">
-      <h2 className="text-2xl yeseva">Filters</h2>
+    <div className="flex flex-col min-h-[calc(100vh-64px)] min-w-[300px] max-w-[300px] bg-gray-200 p-8 gap-4 sticky top-16 self-start overflow-y-auto">
+      <h2 className="text-2xl yeseva mb-2">Filters</h2>
 
-      <h3 className="text-xl noto">Category</h3>
-      <Select
-        placeholder="Select category..."
-        items={categories}
-        value={category}
-        onChange={(value) => setCategory(value)}
-      />
-
-      <h3 className="text-xl noto mt-2">Price</h3>
-      <div className="flex gap-2">
-        <Input placeholder="From" customClasses="bg-white" type="number" />
-        <Input placeholder="To" customClasses="bg-white" type="number" />
+      <div>
+        <h3 className="text-xl noto mb-1">Status</h3>
+        <Select
+          placeholder="Select status..."
+          items={statusOptions}
+          value={localStatus}
+          onChange={(val) => setLocalStatus(val)}
+          customClasses="bg-white"
+        />
       </div>
 
-      <h3 className="text-xl noto">Starts</h3>
-      <Input type="date" />
+      <div>
+        <h3 className="text-xl noto mb-1">Category</h3>
+        <Select
+          placeholder="Select category..."
+          items={categories}
+          value={localCategory}
+          onChange={(val) => setLocalCategory(val)}
+          customClasses="bg-white"
+        />
+      </div>
 
-      <h3 className="text-xl noto mt-2">Ends</h3>
-      <Input type="date" />
+      <div>
+        <h3 className="text-xl noto mb-1">Price</h3>
+        <div className="flex gap-2">
+          <Input
+            placeholder="From"
+            customClasses="bg-white"
+            type="number"
+            value={localMinPrice}
+            onChange={(e) => setLocalMinPrice(e.target.value)}
+          />
+          <Input
+            placeholder="To"
+            customClasses="bg-white"
+            type="number"
+            value={localMaxPrice}
+            onChange={(e) => setLocalMaxPrice(e.target.value)}
+          />
+        </div>
+      </div>
 
-      <Button customClasses="mt-4" variant="secondary">
+      <div>
+        <h3 className="text-xl noto mb-1">Starts after</h3>
+        <Input
+          type="date"
+          customClasses="bg-white"
+          value={localStart}
+          onChange={(e) => setLocalStart(e.target.value)}
+        />
+      </div>
+
+      <div>
+        <h3 className="text-xl noto mb-1">Ends before</h3>
+        <Input
+          type="date"
+          customClasses="bg-white"
+          value={localEnd}
+          onChange={(e) => setLocalEnd(e.target.value)}
+        />
+      </div>
+
+      <Button
+        customClasses="mt-4"
+        variant="secondary"
+        onClick={handleApplyFilters}
+      >
         Apply filters
       </Button>
     </div>
