@@ -1,16 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "./useAuth.tsx";
 import axios from "axios";
 
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+const envURL = import.meta.env.VITE_API_BASE_URL;
+const baseURL = envURL.endsWith("/") ? envURL.slice(0, -1) : envURL;
 
 export const useAutoLogin = () => {
   const { login, logout } = useAuth();
   const [loading, setLoading] = useState(true);
-  const isInitialLoad = useRef(true);
+
+  const requestSent = useRef(false);
 
   useEffect(() => {
-    if (!isInitialLoad.current) return;
+    if (requestSent.current) return;
+    requestSent.current = true;
 
     const refreshSession = async () => {
       try {
@@ -25,7 +28,6 @@ export const useAutoLogin = () => {
         logout();
       } finally {
         setLoading(false);
-        isInitialLoad.current = false;
       }
     };
 
