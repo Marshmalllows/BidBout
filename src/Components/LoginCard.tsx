@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button.tsx";
 import Input from "./Input.tsx";
-import { useAuth } from "../Hooks/UseAuth.tsx";
+import { useAuth } from "../Hooks/useAuth.tsx";
 import { useAxios } from "../API/AxiosInstance.ts";
 import axios from "axios";
 import * as UAParser from "ua-parser-js";
@@ -88,19 +88,13 @@ function LoginCard() {
         Log in
       </Button>
       {error && <p className="text-red-600 mb-2 noto">{error}</p>}
-      <p className="my-2 sm:text-base text-sm italic noto">
+      <p className="my-2 mb-12 sm:text-base text-sm italic noto">
         Don`t have an account?{" "}
         <a
           onClick={() => navigate("/register")}
           className="underline hover:cursor-pointer"
         >
           Create one!
-        </a>
-      </p>
-      <p className="mt-2 mb-12 italic noto text-end sm:text-base text-sm">
-        Forgot your password?{" "}
-        <a href="https://halyamov.vercel.app/" className="underline">
-          Not a problem!
         </a>
       </p>
     </div>

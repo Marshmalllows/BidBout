@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Input from "./Input.tsx";
 import DropdownMenu from "./DropdownMenu.tsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "../Hooks/UseAuth.tsx";
+import { useAuth } from "../Hooks/useAuth.tsx";
 
 function Header() {
   const navigate = useNavigate();
@@ -77,7 +77,7 @@ function Header() {
           <DropdownMenu
             placeholder="Sell"
             options={[
-              { label: "My Lots", onClick: () => navigate("/") },
+              { label: "My Lots", onClick: () => navigate("/my-lots") },
               {
                 label: "Create Lot",
                 onClick: () => navigate("/lot-settings"),

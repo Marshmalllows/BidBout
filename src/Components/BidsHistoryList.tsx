@@ -1,5 +1,5 @@
 import type { BidModel } from "./LotCard";
-import { useAuth } from "../Hooks/UseAuth.tsx";
+import { useAuth } from "../Hooks/useAuth.tsx";
 
 interface Props {
   bids: BidModel[];
@@ -28,7 +28,7 @@ function BidsHistoryList({ bids }: Props) {
 
   if (bids.length === 0) {
     return (
-      <div className="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-sm text-center">
+      <div className="mt-8 p-6 bg-gray-50 border border-gray-200 text-center">
         <h3 className="noto text-xl text-gray-500 italic">
           No bids yet. Be the first to place a bid!
         </h3>
@@ -39,7 +39,7 @@ function BidsHistoryList({ bids }: Props) {
   return (
     <div className="mt-12">
       <h3 className="yeseva text-2xl mb-4">Bidding History ({bids.length})</h3>
-      <div className="flex flex-col border border-gray-200 rounded-sm overflow-hidden shadow-sm">
+      <div className="flex flex-col border border-gray-200 overflow-hidden shadow-sm">
         <div className="bg-gray-100 p-3 flex justify-between font-bold text-gray-700 noto text-sm">
           <span className="w-1/3">Bidder</span>
           <span className="w-1/3 text-center">Amount</span>
@@ -67,7 +67,7 @@ function BidsHistoryList({ bids }: Props) {
                 )}
               </div>
 
-              <div className="w-1/3 text-center font-bold text-gray-900">
+              <div className="w-1/3 yeseva text-center text-gray-900">
                 $ {bid.amount}
               </div>
 

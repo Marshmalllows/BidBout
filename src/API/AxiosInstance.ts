@@ -1,5 +1,5 @@
 import axios, { type AxiosRequestConfig } from "axios";
-import { useAuth } from "../Hooks/UseAuth.tsx";
+import { useAuth } from "../Hooks/useAuth.tsx";
 import { useMemo } from "react";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;

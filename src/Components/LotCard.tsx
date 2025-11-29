@@ -4,7 +4,7 @@ import Button from "./Button.tsx";
 import { useAxios } from "../API/AxiosInstance.ts";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../Hooks/UseAuth.tsx";
+import { useAuth } from "../Hooks/useAuth.tsx";
 
 export interface BidModel {
   id: number;
@@ -18,7 +18,7 @@ interface LotCardProps {
   lotId: number;
   reservePrice: number;
   pickupPlace: string;
-  startDate: Date; // Додали StartDate
+  startDate: Date;
   endDate: Date;
   initialPrice: number;
   bidsHistory: BidModel[];

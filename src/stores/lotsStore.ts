@@ -16,7 +16,7 @@ interface LotStore extends LotFilters {
   resetFilters: () => void;
 }
 
-export const useLotStore = create<LotStore>((set) => ({
+const DEFAULT_FILTERS = {
   searchQuery: "",
   categoryId: null,
   minPrice: "",
@@ -25,18 +25,10 @@ export const useLotStore = create<LotStore>((set) => ({
   endDate: "",
   status: 0,
   sortBy: 0,
+};
 
+export const useLotStore = create<LotStore>((set) => ({
   setFilters: (newFilters) => set((state) => ({ ...state, ...newFilters })),
-
-  resetFilters: () =>
-    set({
-      searchQuery: "",
-      categoryId: null,
-      minPrice: "",
-      maxPrice: "",
-      startDate: "",
-      endDate: "",
-      status: 0,
-      sortBy: 0,
-    }),
+  ...DEFAULT_FILTERS,
+  resetFilters: () => set(DEFAULT_FILTERS),
 }));

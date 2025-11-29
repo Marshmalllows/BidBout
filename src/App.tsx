@@ -8,6 +8,8 @@ import RegisterPage from "./Pages/RegisterPage.tsx";
 import { useAutoLogin } from "./Hooks/useAutoLogin.tsx";
 import ProtectedRoute from "./Components/ProtectedRoute.tsx";
 import { Loader } from "./Components/Loader.tsx";
+import MyLotsPage from "./Pages/MyLotsPage.tsx";
+import SellerReviewsPage from "./Pages/SellerReviewsPage.tsx";
 
 function App() {
   const loading = useAutoLogin();
@@ -27,12 +29,22 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/lot/:id" element={<LotDetailsPage />} />
+        <Route path="/seller/:id" element={<SellerReviewsPage />} />
 
         <Route
-          path="/lot-settings"
+          path="/lot-settings/:id?"
           element={
             <ProtectedRoute loading={loading}>
               <LotSettingsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/my-lots"
+          element={
+            <ProtectedRoute loading={loading}>
+              <MyLotsPage />
             </ProtectedRoute>
           }
         />

@@ -1,7 +1,7 @@
 import Button from "./Button.tsx";
 import Input from "./Input.tsx";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../Hooks/UseAuth.tsx";
+import { useAuth } from "../Hooks/useAuth.tsx";
 import { useAxios } from "../API/AxiosInstance.ts";
 import { useState } from "react";
 import axios from "axios";

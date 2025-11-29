@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useAuth } from "./UseAuth.tsx";
+import { useAuth } from "./useAuth.tsx";
 import axios from "axios";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
