@@ -103,7 +103,7 @@ function SellerReviewsPage() {
     return <div className="flex justify-center mt-20">User not found</div>;
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white overflow-x-hidden">
       <Header />
 
       <div className="max-w-[1100px] w-full mx-auto my-6 px-4 md:px-24">

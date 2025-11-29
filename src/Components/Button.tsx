@@ -7,8 +7,9 @@ type ButtonProps = ComponentProps<"button"> & {
 
 function Button({ variant, customClasses, ...props }: ButtonProps) {
   const base =
-    "border-1 w-full arimo transition-all border-gray-400 py-3 px-2 bg-gray-200 sm:text-base hover:bg-gray-300 hover:border-gray-500 " +
+    "border-1 w-full arimo transition-all border-gray-400 py-3 px-2 bg-gray-200 text-sm sm:text-base hover:bg-gray-300 hover:border-gray-500 " +
     "hover:cursor-pointer";
+
   const variants: Record<string, string> = {
     secondary:
       "border-1 w-full arimo transition-all border-gray-400 py-3 px-2 bg-white text-sm sm:text-base hover:bg-gray-100 " +

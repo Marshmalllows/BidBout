@@ -97,7 +97,7 @@ function MainPage() {
     if (option && option.id !== 0) {
       newParams.set("sortBy", option.id.toString());
     } else {
-      newParams.delete("sortBy"); // 0 (Newest) - дефолтне, не пишемо в URL
+      newParams.delete("sortBy");
     }
     setSearchParams(newParams);
   };
@@ -187,27 +187,32 @@ function MainPage() {
   });
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white overflow-x-hidden">
       <Header />
-      <div className="flex flex-1 flex-row w-full relative">
-        <SideBar />
 
-        <div className="m-4 w-full">
+      <div className="flex flex-col md:flex-row flex-1 w-full relative">
+        <div className="w-full md:w-auto">
+          <SideBar />
+        </div>
+
+        <div className="p-4 w-full">
           <div className="flex flex-col gap-4 mb-6">
-            <div className="flex justify-between items-end border-b border-gray-200 pb-2">
-              <div className="flex flex-row gap-2 items-center">
-                <h3 className="yeseva text-2xl">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-gray-200 pb-2 gap-2 sm:gap-0">
+              <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto">
+                <h3 className="yeseva text-xl sm:text-2xl">
                   {searchQuery
                     ? `Search results for "${searchQuery}"`
                     : "Popular Lots"}
                 </h3>
-                <SortingSelect
-                  items={sortOptions}
-                  value={currentSortOption}
-                  onChange={handleSortChange}
-                />
+                <div className="ml-auto sm:ml-0">
+                  <SortingSelect
+                    items={sortOptions}
+                    value={currentSortOption}
+                    onChange={handleSortChange}
+                  />
+                </div>
               </div>
-              <span className="noto text-gray-500 text-sm mb-1">
+              <span className="noto text-gray-500 text-sm mb-1 self-end">
                 {filteredAndSortedLots.length} items found
               </span>
             </div>
@@ -215,18 +220,17 @@ function MainPage() {
 
           {filteredAndSortedLots.length === 0 && !loading && (
             <div className="flex flex-col items-center justify-center py-20 text-gray-500 animate-pulse">
-              <p className="noto text-xl">
+              <p className="noto text-xl text-center">
                 No lots found matching your criteria.
               </p>
-              <p className="noto text-sm mt-2">
+              <p className="noto text-sm mt-2 text-center">
                 Try adjusting your filters or search query.
               </p>
             </div>
           )}
-
           <div
             key={animationKey}
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
           >
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (

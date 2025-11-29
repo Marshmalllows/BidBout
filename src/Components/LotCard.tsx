@@ -174,7 +174,6 @@ function LotCard({
   const quickBid1 = basePrice + 10;
   const quickBid2 = basePrice + 25;
   const quickBid3 = basePrice + 50;
-  const isReserveMet = !reservePrice || currentPrice >= reservePrice;
 
   const isInteractable = status === "active";
 
@@ -189,19 +188,17 @@ function LotCard({
         </span>
       </h2>
       <div
-        className={`flex flex-col p-6 shadow-md border-1 border-gray-300 rounded-xs w-100 min-h-full gap-2 transition-colors ${status === "closed" ? "bg-gray-50" : "bg-white"}`}
+        className={`flex flex-col p-4 md:p-6 shadow-md border-1 border-gray-300 rounded-xs w-full min-h-full gap-2 transition-colors ${status === "closed" ? "bg-gray-50" : "bg-white"}`}
       >
         <h3 className="noto italic text-lg text-gray-500">
           {status === "closed" ? "Winning bid" : "Current bid"}
         </h3>
-        <h2 className="lora text-5xl mb-2 text-gray-900">
+        <h2 className="lora text-4xl md:text-5xl mb-2 text-gray-900 break-words">
           {currentPrice > 0 ? `$ ${currentPrice}` : "No bids"}
         </h2>
         {reservePrice > 0 && (
-          <h3
-            className={`noto italic text-lg mb-4 ${isReserveMet ? "text-green-700" : "text-gray-500"}`}
-          >
-            Reserve price ${reservePrice} {isReserveMet ? "" : "not met"}
+          <h3 className={`noto italic text-lg mb-4 text-gray-500`}>
+            Reserve price ${reservePrice ? "" : "not met"}
           </h3>
         )}
         {!reservePrice && (
@@ -211,11 +208,12 @@ function LotCard({
         )}
         {status !== "closed" ? (
           <>
-            <div className="flex gap-2 mb-2">
+            <div className="grid grid-cols-3 gap-2 mb-4">
               <Button
                 variant="rounded"
                 onClick={() => handleQuickBidClick(quickBid1)}
                 disabled={!isInteractable}
+                customClasses="px-1 text-sm md:text-base"
               >
                 $ {quickBid1}
               </Button>
@@ -223,6 +221,7 @@ function LotCard({
                 variant="rounded"
                 onClick={() => handleQuickBidClick(quickBid2)}
                 disabled={!isInteractable}
+                customClasses="px-1 text-sm md:text-base"
               >
                 $ {quickBid2}
               </Button>
@@ -230,6 +229,7 @@ function LotCard({
                 variant="rounded"
                 onClick={() => handleQuickBidClick(quickBid3)}
                 disabled={!isInteractable}
+                customClasses="px-1 text-sm md:text-base"
               >
                 $ {quickBid3}
               </Button>
@@ -255,20 +255,26 @@ function LotCard({
                 <span className="text-red-500 text-sm ml-1">{error}</span>
               )}
             </div>
-            <div className="flex gap-2 mt-2 mb-4">
-              <Button
-                variant="secondary"
-                onClick={handlePlaceBid}
-                disabled={!bidAmount || loading || !isInteractable}
-              >
-                {loading ? "Placing..." : "Place bid"}
-              </Button>
-              <Button
-                onClick={handleSetMaxBid}
-                disabled={!bidAmount || loading || !isInteractable}
-              >
-                Set max bid
-              </Button>
+            <div className="flex flex-wrap gap-2 mt-2 mb-4">
+              <div className="flex-1 min-w-[120px]">
+                <Button
+                  variant="secondary"
+                  onClick={handlePlaceBid}
+                  disabled={!bidAmount || loading || !isInteractable}
+                  customClasses="w-full"
+                >
+                  {loading ? "Placing..." : "Place bid"}
+                </Button>
+              </div>
+              <div className="flex-1 min-w-[120px]">
+                <Button
+                  onClick={handleSetMaxBid}
+                  disabled={!bidAmount || loading || !isInteractable}
+                  customClasses="w-full"
+                >
+                  Set max bid
+                </Button>
+              </div>
             </div>
           </>
         ) : (
@@ -279,7 +285,7 @@ function LotCard({
             </p>
           </div>
         )}
-        <h3 className="noto italic text-lg mt-2 mb-2">
+        <h3 className="noto italic text-lg mt-2 mb-2 break-words">
           Pickup in {pickupPlace}
         </h3>
         {topBid && (
@@ -298,7 +304,7 @@ function LotCard({
                   : "Current Leader"}
             </h3>
 
-            <p className="noto text-md text-gray-800">
+            <p className="noto text-md text-gray-800 break-all">
               <span className="font-bold">{topBid.bidderName}</span>: ${" "}
               {topBid.amount}
             </p>

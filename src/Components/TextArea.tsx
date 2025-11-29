@@ -3,6 +3,7 @@ import {
   useRef,
   useEffect,
   type TextareaHTMLAttributes,
+  type ChangeEvent,
 } from "react";
 
 type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
@@ -11,42 +12,62 @@ type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   customClasses?: string;
 };
 
-function Textarea({
+function TextArea({
   placeholder,
   font,
   customClasses,
+  value: externalValue,
+  onChange: externalOnChange,
   ...props
 }: TextareaProps) {
-  const [value, setValue] = useState("");
+  const [internalValue, setInternalValue] = useState("");
+  const isControlled = externalValue !== undefined;
+  const currentValue = isControlled ? externalValue : internalValue;
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Автопідлаштування висоти
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height =
-        textareaRef.current.scrollHeight + "px";
+  const adjustHeight = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
     }
-  }, [value]);
+  };
+
+  useEffect(() => {
+    adjustHeight();
+  }, [currentValue]);
+
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    if (!isControlled) {
+      setInternalValue(e.target.value);
+    }
+    if (externalOnChange) {
+      externalOnChange(e);
+    }
+  };
 
   return (
-    <div className="relative my-6 w-full transition-all">
+    <div className="relative w-full transition-all">
       <textarea
         id={placeholder + "Id"}
         name={placeholder}
-        placeholder=""
-        value={value}
+        placeholder=" "
+        value={currentValue}
         rows={1}
-        onChange={(e) => setValue(e.target.value)}
         ref={textareaRef}
-        className={`bg-gray-200 ${font ?? "noto"} w-full p-3 pl-5 focus:outline-gray-500 peer outline-none resize-none min-h-[3rem] ${customClasses}`}
+        onChange={handleChange}
+        className={`bg-gray-200 ${font ?? "noto"} w-full p-3 pl-5 focus:outline-gray-500 peer outline-none resize-none min-h-[52px] overflow-hidden ${customClasses}`}
         {...props}
       />
+
       <label
         htmlFor={placeholder + "Id"}
-        className={`absolute ${font ?? "noto"} left-5 cursor-text -top-4 peer-focus:left-0
-        not-peer-placeholder-shown:left-0 peer-focus:text-sm not-peer-placeholder-shown:text-sm peer-focus:-top-4
-        transition-all peer-placeholder-shown:top-[24px] peer-placeholder-shown:text-black -translate-y-1/2`}
+        className={`absolute ${font ?? "noto"} left-5 cursor-text -top-5 peer-focus:left-0
+        not-peer-placeholder-shown:left-0 peer-focus:text-sm not-peer-placeholder-shown:text-sm peer-focus:-top-6
+        not-peer-placeholder-shown:-top-6
+        transition-all 
+        peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-black pointer-events-none`}
       >
         {placeholder}
       </label>
@@ -54,4 +75,4 @@ function Textarea({
   );
 }
 
-export default Textarea;
+export default TextArea;

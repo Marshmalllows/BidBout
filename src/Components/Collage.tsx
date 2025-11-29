@@ -44,46 +44,49 @@ function Collage({ images }: CollageProps) {
 
   useEffect(() => {
     if (containerRef.current) {
-      const thumbnailWidth = containerRef.current.children[0]?.clientWidth || 0;
+      const firstChild = containerRef.current.children[0];
+      const thumbnailWidth = firstChild ? firstChild.clientWidth : 0;
+
       const gap = 8;
       const offset = (thumbnailWidth + gap) * startIndex;
       containerRef.current.style.transform = `translateX(-${offset}px)`;
     }
-  }, [startIndex]);
+  }, [startIndex, imageSources.length]);
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="h-96 w-full overflow-hidden border border-gray-400">
+    <div className="flex flex-col items-center w-full">
+      <div className="h-96 w-full overflow-hidden border border-gray-400 bg-gray-100">
         <img
           src={imageSources[selectedIndex]}
           alt="product"
-          className="flex w-full h-full object-cover"
+          className="flex w-full h-full object-contain md:object-cover" // object-contain щоб не обрізало на мобільному
         />
       </div>
-      <div className="flex items-center gap-2 mt-2 w-full">
+
+      <div className="flex items-center gap-2 mt-2 w-full h-24">
         {imageSources.length > 3 && (
           <button
             onClick={handlePrev}
             disabled={selectedIndex === 0}
-            className="p-1 disabled:opacity-50 bold text-3xl"
+            className="h-full w-10 flex-shrink-0 flex items-center justify-center border border-gray-400 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:bg-gray-50 transition-colors"
           >
-            {"<"}
+            <span className="text-xl font-bold text-gray-600">{"<"}</span>
           </button>
         )}
 
         {imageSources.length > 1 && (
-          <div className="overflow-hidden w-full">
+          <div className="overflow-hidden w-full h-full p-px">
             <div
               ref={containerRef}
-              className="flex gap-2 transition-transform duration-300"
+              className="flex gap-2 transition-transform duration-300 h-full"
             >
               {imageSources.map((src, index) => (
                 <div
                   key={index}
-                  className={`h-24 w-1/3 flex-shrink-0 border-2 cursor-pointer overflow-hidden ${
+                  className={`h-full w-[calc(33.333%-6px)] flex-shrink-0 border cursor-pointer overflow-hidden box-border ${
                     selectedIndex === index
-                      ? "border-blue-500"
-                      : "border-gray-400"
+                      ? "border-blue-500 border-2"
+                      : "border-gray-400 border"
                   }`}
                   onClick={() => {
                     setSelectedIndex(index);
@@ -105,9 +108,9 @@ function Collage({ images }: CollageProps) {
           <button
             onClick={handleNext}
             disabled={selectedIndex === imageSources.length - 1}
-            className="p-1 disabled:opacity-50 text-3xl bold"
+            className="h-full w-10 flex-shrink-0 flex items-center justify-center border border-gray-400 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:bg-gray-50 transition-colors"
           >
-            {">"}
+            <span className="text-xl font-bold text-gray-600">{">"}</span>
           </button>
         )}
       </div>

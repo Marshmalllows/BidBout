@@ -4,8 +4,8 @@ import Button from "../Components/Button.tsx";
 import { useAxios } from "../API/AxiosInstance.ts";
 import { useEffect, useState } from "react";
 import { AxiosError } from "axios";
-import { useNavigate } from "react-router-dom"; // Імпорт навігації
-import { useAuth } from "../Hooks/useAuth.tsx"; // Імпорт хука авторизації для отримання ID
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Hooks/useAuth.tsx";
 
 interface UserProfileData {
   firstName: string;
@@ -21,8 +21,8 @@ type ValidationErrors = {
 
 function ProfileSettingsPage() {
   const axiosAuth = useAxios(true);
-  const navigate = useNavigate(); // Хук для перенаправлення
-  const { user } = useAuth(); // Отримуємо поточного юзера
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState<UserProfileData>({
     firstName: "",
@@ -100,7 +100,6 @@ function ProfileSettingsPage() {
 
   const handleSubmit = async () => {
     setErrors({});
-
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -109,7 +108,6 @@ function ProfileSettingsPage() {
 
     try {
       await axiosAuth.put("/user/me", formData);
-
       if (user?.id) {
         navigate(`/seller/${user.id}`);
       } else {
@@ -122,7 +120,6 @@ function ProfileSettingsPage() {
             error.response?.data ||
             "Failed to update profile"
           : "Unknown error";
-
       const errorText =
         typeof msg === "object" ? JSON.stringify(msg) : String(msg);
       setErrors({ server: errorText });
@@ -141,7 +138,7 @@ function ProfileSettingsPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white overflow-x-hidden">
       <Header />
       <div className="max-w-[1100px] w-full mx-auto my-6 px-4 md:px-24">
         <h1 className="yeseva text-3xl">Profile settings</h1>
@@ -154,8 +151,9 @@ function ProfileSettingsPage() {
             </div>
           )}
 
-          <h3 className="yeseva noto text-2xl">Public info</h3>
-          <div className="flex gap-2 my-2 items-start">
+          <h3 className="yeseva noto text-2xl mb-6">Public info</h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-4 mb-6 items-start">
             <div className="w-full">
               <Input
                 type="text"
@@ -176,21 +174,19 @@ function ProfileSettingsPage() {
             </div>
           </div>
 
-          <h3 className="yeseva noto text-2xl mt-4">Contacts</h3>
-          <div className="flex gap-2 my-2 items-start">
-            <div className="w-full">
-              <Input
-                type="text"
-                placeholder="Phone number"
-                customClasses={`bg-white border ${borderClass("phone")}`}
-                value={formData.phone}
-                onChange={(e) => handleChange("phone", e.target.value)}
-              />
-            </div>
+          <h3 className="yeseva noto text-2xl mt-6 mb-6">Contacts</h3>
+          <div className="mb-6 w-full">
+            <Input
+              type="text"
+              placeholder="Phone number"
+              customClasses={`bg-white border ${borderClass("phone")}`}
+              value={formData.phone}
+              onChange={(e) => handleChange("phone", e.target.value)}
+            />
           </div>
 
-          <h3 className="yeseva noto text-2xl mt-4">Location</h3>
-          <div className="flex gap-2 my-2 items-start">
+          <h3 className="yeseva noto text-2xl mt-6 mb-6">Location</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-4 mb-6 items-start">
             <div className="w-full">
               <Input
                 type="text"
@@ -210,6 +206,7 @@ function ProfileSettingsPage() {
               />
             </div>
           </div>
+
           {Object.keys(errors).length > 0 && (
             <div className="noto text-red-600 mt-3 text-lg">
               {Object.values(errors).map(
@@ -219,7 +216,7 @@ function ProfileSettingsPage() {
           )}
 
           <Button
-            customClasses="my-4"
+            customClasses="mt-8 mb-6 w-full md:w-auto px-10"
             variant="secondary"
             onClick={handleSubmit}
           >

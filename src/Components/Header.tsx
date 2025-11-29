@@ -52,9 +52,9 @@ function Header() {
 
   return (
     <div className="bg-gray-300 w-full sticky top-0 z-50 shadow-sm">
-      <div className="primary-container py-2 items-center grid grid-cols-[300px_1fr_300px]">
+      <div className="primary-container py-2 px-4 md:px-0 flex flex-wrap items-center justify-between gap-y-3 md:grid md:grid-cols-[300px_1fr_300px] md:gap-0">
         <h1
-          className="text-center text-3xl font-bold yeseva cursor-pointer"
+          className="text-3xl font-bold yeseva cursor-pointer order-1 text-left md:order-none md:text-center"
           onClick={() => {
             setLocalSearch("");
             navigate("/");
@@ -62,8 +62,10 @@ function Header() {
         >
           BidBout
         </h1>
-
-        <form onSubmit={handleSearchSubmit} className="relative w-full group">
+        <form
+          onSubmit={handleSearchSubmit}
+          className="relative group w-full order-3 md:order-none md:w-full"
+        >
           <Input
             type="search"
             placeholder="Search lots..."
@@ -72,8 +74,7 @@ function Header() {
             onChange={(e) => setLocalSearch(e.target.value)}
           />
         </form>
-
-        <div className="flex w-full justify-between gap-4 px-[20%]">
+        <div className="flex gap-4 order-2 justify-end md:order-none md:w-full md:justify-between md:px-[20%]">
           <DropdownMenu
             placeholder="Sell"
             options={[

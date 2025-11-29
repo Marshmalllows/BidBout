@@ -111,9 +111,9 @@ function RegistrationCard() {
       >
         BidBout
       </h1>
-      <p className="mb-2 noto text-lg">Enter your info</p>
+      <p className="mb-6 noto text-lg">Enter your info</p>
 
-      <form onSubmit={handleRegister} className="flex flex-col w-full">
+      <form onSubmit={handleRegister} className="flex flex-col w-full gap-6">
         <Input
           placeholder="Email..."
           type="text"

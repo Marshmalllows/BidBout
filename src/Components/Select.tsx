@@ -56,13 +56,17 @@ function Select({
     <div ref={selectRef} className="relative noto w-full">
       <button
         onClick={handleShowSelectItems}
+        type="button"
         className={`w-full text-start transition-all bg-white p-3 h-12 pl-5 focus:outline-1 focus:outline-gray-400 hover:cursor-pointer ${customClasses}`}
       >
         {selectedItem ? selectedItem.name : placeholder}
       </button>
+
       <div
-        className={`absolute top-12 w-full z-10 outline outline-1 outline-gray-400 transition-all duration-300 ${
-          isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+        className={`absolute top-12 w-full z-20 outline outline-1 outline-gray-400 transition-all duration-300 bg-white max-h-60 overflow-y-auto ${
+          isVisible
+            ? "opacity-100 visible"
+            : "opacity-0 invisible pointer-events-none"
         }`}
       >
         {items.map((item) => (

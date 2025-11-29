@@ -86,9 +86,9 @@ function LoginCard() {
       >
         BidBout
       </h1>
-      <p className="mb-2 noto text-lg">Enter your login info</p>
+      <p className="mb-6 noto text-lg">Enter your login info</p>
 
-      <form onSubmit={handleLogin} className="flex flex-col w-full">
+      <form onSubmit={handleLogin} className="flex flex-col w-full gap-6">
         <Input
           placeholder="Email..."
           type="text"

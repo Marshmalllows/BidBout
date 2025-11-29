@@ -15,7 +15,7 @@ interface ApiCategory {
   name: string;
 }
 
-const statusOptions = [
+const STATUS_OPTIONS = [
   { id: 0, name: "All Statuses" },
   { id: 1, name: "Active" },
   { id: 2, name: "Upcoming" },
@@ -27,14 +27,12 @@ function SideBar() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
-
   const [localCategory, setLocalCategory] = useState<
     CategoryResponse | undefined
   >();
-  const [localStatus, setLocalStatus] = useState<
-    CategoryResponse | undefined
-  >();
-
+  const [localStatus, setLocalStatus] = useState<CategoryResponse | undefined>(
+    STATUS_OPTIONS[0],
+  );
   const [localMinPrice, setLocalMinPrice] = useState(
     searchParams.get("minPrice") || "",
   );
@@ -45,6 +43,8 @@ function SideBar() {
     searchParams.get("startDate") || "",
   );
   const [localEnd, setLocalEnd] = useState(searchParams.get("endDate") || "");
+
+  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -70,10 +70,10 @@ function SideBar() {
 
     const urlStatus = searchParams.get("status");
     if (urlStatus) {
-      const found = statusOptions.find((s) => s.id === Number(urlStatus));
-      setLocalStatus(found); // Якщо знайдено - ставимо статус
+      const found = STATUS_OPTIONS.find((s) => s.id === Number(urlStatus));
+      setLocalStatus(found);
     } else {
-      setLocalStatus(undefined); // Якщо в URL немає - скидаємо в undefined (покажеться placeholder)
+      setLocalStatus(undefined);
     }
 
     const urlCatId = searchParams.get("categoryId");
@@ -115,81 +115,98 @@ function SideBar() {
     else newParams.delete("endDate");
 
     setSearchParams(newParams);
+    setIsMobileExpanded(false);
   };
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-64px)] min-w-[300px] max-w-[300px] bg-gray-200 p-8 gap-4 sticky top-16 self-start overflow-y-auto">
-      <h2 className="text-2xl yeseva mb-2">Filters</h2>
-
-      <div>
-        <h3 className="text-xl noto mb-1">Status</h3>
-        <Select
-          placeholder="Select status..."
-          items={statusOptions}
-          value={localStatus}
-          onChange={(val) => setLocalStatus(val)}
-          customClasses="bg-white"
-        />
+    <div className="flex flex-col bg-gray-200 w-full md:w-[300px] md:min-h-screen">
+      <div
+        className="p-4 flex justify-between items-center md:hidden cursor-pointer bg-gray-300"
+        onClick={() => setIsMobileExpanded(!isMobileExpanded)}
+      >
+        <h2 className="text-xl yeseva">Filters</h2>
+        <span className="noto font-bold text-2xl">
+          {isMobileExpanded ? "−" : "+"}
+        </span>
       </div>
 
-      <div>
-        <h3 className="text-xl noto mb-1">Category</h3>
-        <Select
-          placeholder="Select category..."
-          items={categories}
-          value={localCategory}
-          onChange={(val) => setLocalCategory(val)}
-          customClasses="bg-white"
-        />
-      </div>
+      <div
+        className={`p-8 gap-4 flex-col ${
+          isMobileExpanded ? "flex" : "hidden"
+        } md:flex`}
+      >
+        <h2 className="text-2xl yeseva mb-2 hidden md:block">Filters</h2>
 
-      <div>
-        <h3 className="text-xl noto mb-1">Price</h3>
-        <div className="flex gap-2">
-          <Input
-            placeholder="From"
+        <div>
+          <h3 className="text-xl noto mb-1">Status</h3>
+          <Select
+            placeholder="Select status..."
+            items={STATUS_OPTIONS}
+            value={localStatus}
+            onChange={(val) => setLocalStatus(val)}
             customClasses="bg-white"
-            type="number"
-            value={localMinPrice}
-            onChange={(e) => setLocalMinPrice(e.target.value)}
-          />
-          <Input
-            placeholder="To"
-            customClasses="bg-white"
-            type="number"
-            value={localMaxPrice}
-            onChange={(e) => setLocalMaxPrice(e.target.value)}
           />
         </div>
-      </div>
 
-      <div>
-        <h3 className="text-xl noto mb-1">Starts after</h3>
-        <Input
-          type="date"
-          customClasses="bg-white"
-          value={localStart}
-          onChange={(e) => setLocalStart(e.target.value)}
-        />
-      </div>
+        <div>
+          <h3 className="text-xl noto mb-1">Category</h3>
+          <Select
+            placeholder="Select category..."
+            items={categories}
+            value={localCategory}
+            onChange={(val) => setLocalCategory(val)}
+            customClasses="bg-white"
+          />
+        </div>
 
-      <div>
-        <h3 className="text-xl noto mb-1">Ends before</h3>
-        <Input
-          type="date"
-          customClasses="bg-white"
-          value={localEnd}
-          onChange={(e) => setLocalEnd(e.target.value)}
-        />
-      </div>
+        <div>
+          <h3 className="text-xl noto mb-1">Price</h3>
+          <div className="flex gap-2">
+            <Input
+              placeholder="From"
+              customClasses="bg-white"
+              type="number"
+              value={localMinPrice}
+              onChange={(e) => setLocalMinPrice(e.target.value)}
+            />
+            <Input
+              placeholder="To"
+              customClasses="bg-white"
+              type="number"
+              value={localMaxPrice}
+              onChange={(e) => setLocalMaxPrice(e.target.value)}
+            />
+          </div>
+        </div>
 
-      <Button
-        customClasses="mt-4"
-        variant="secondary"
-        onClick={handleApplyFilters}
-      >
-        Apply filters
-      </Button>
+        <div>
+          <h3 className="text-xl noto mb-1">Starts after</h3>
+          <Input
+            type="date"
+            customClasses="bg-white"
+            value={localStart}
+            onChange={(e) => setLocalStart(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <h3 className="text-xl noto mb-1">Ends before</h3>
+          <Input
+            type="date"
+            customClasses="bg-white"
+            value={localEnd}
+            onChange={(e) => setLocalEnd(e.target.value)}
+          />
+        </div>
+
+        <Button
+          customClasses="mt-4"
+          variant="secondary"
+          onClick={handleApplyFilters}
+        >
+          Apply filters
+        </Button>
+      </div>
     </div>
   );
 }

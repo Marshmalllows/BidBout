@@ -5,7 +5,7 @@ import Select from "../Components/Select.tsx";
 import TextArea from "../Components/TextArea.tsx";
 import ImageUploader from "../Components/ImageUploader.tsx";
 import { useAxios } from "../API/AxiosInstance.ts";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AxiosError } from "axios";
 
@@ -43,7 +43,6 @@ function LotSettingsPage() {
   const [errors, setErrors] = useState<ValidationErrors>({});
 
   const navigate = useNavigate();
-
   const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
@@ -60,51 +59,38 @@ function LotSettingsPage() {
 
   useEffect(() => {
     if (isEditMode) return;
-
     const fetchUserLocation = async () => {
       try {
         const res = await axiosAuth.get("/user/me");
-
         const parts = [];
         if (res.data.region) parts.push(res.data.region);
         if (res.data.city) parts.push(res.data.city);
-
-        if (parts.length > 0) {
-          setPickupPlace(parts.join(", "));
-        }
+        if (parts.length > 0) setPickupPlace(parts.join(", "));
       } catch (err) {
         console.error("Failed to fetch user location:", err);
       }
     };
-
     fetchUserLocation();
   }, [isEditMode, axiosAuth]);
 
   useEffect(() => {
     if (!isEditMode) return;
-
     const fetchLotData = async () => {
       try {
         const res = await axiosAuth.get(`/lots/${id}`);
         const lot = res.data;
-
         setTitle(lot.title);
         setPickupPlace(lot.pickupPlace);
         setDescription(lot.description || "");
-
         const startObj = new Date(lot.startDate);
-        const isoDate = startObj.toISOString().split("T")[0];
-        setStartDate(isoDate);
-
+        setStartDate(startObj.toISOString().split("T")[0]);
         const endObj = new Date(lot.endDate);
         const diffTime = Math.abs(endObj.getTime() - startObj.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         setDuration(diffDays.toString());
-
         setReservePrice(lot.reservePrice ? lot.reservePrice.toString() : "");
         setExistingImages(lot.images);
         setDeletedImageIds([]);
-
         if (lot.category) {
           setCategory({ id: lot.category.id, name: lot.category.name });
         }
@@ -113,7 +99,6 @@ function LotSettingsPage() {
         navigate("/my-lots");
       }
     };
-
     fetchLotData();
   }, [isEditMode, id, axiosAuth, navigate]);
 
@@ -130,41 +115,32 @@ function LotSettingsPage() {
     setDeletedImageIds((prev) => [...prev, imageId]);
   };
 
+  const borderClass = (fieldName: string) =>
+    errors[fieldName] ? "border-red-500" : "border-white";
+
   const validate = (): ValidationErrors => {
     const newErrors: ValidationErrors = {};
-
     if (!title.trim()) newErrors.title = "Enter title";
-    else if (title.length > 100)
-      newErrors.title = "Title too long (max 100 chars)";
-
+    else if (title.length > 100) newErrors.title = "Max 100 chars";
     if (!category) newErrors.category = "Select category";
-
     if (!pickupPlace.trim()) newErrors.pickupPlace = "Enter pickup place";
-    else if (pickupPlace.length > 100)
-      newErrors.pickupPlace = "Place name too long";
-
+    else if (pickupPlace.length > 100) newErrors.pickupPlace = "Max 100 chars";
     if (!startDate) newErrors.startDate = "Select start date";
     else {
       const selectedDate = new Date(startDate);
       const now = new Date();
       now.setHours(0, 0, 0, 0);
-      if (selectedDate < now)
-        newErrors.startDate = "Start date cannot be in the past";
+      if (selectedDate < now) newErrors.startDate = "Date cannot be past";
     }
-
     if (!duration) newErrors.duration = "Enter duration";
     else {
       const days = Number(duration);
-      if (days <= 0) newErrors.duration = "Duration must be at least 1 day";
-      else if (days > 30) newErrors.duration = "Duration cannot exceed 30 days";
+      if (days <= 0 || days > 30) newErrors.duration = "1-30 days";
     }
-
     if (reservePrice && Number(reservePrice) < 0)
-      newErrors.reservePrice = "Price cannot be negative";
-
+      newErrors.reservePrice = "Cannot be negative";
     const hasImages = images.length > 0 || existingImages.length > 0;
-    if (!hasImages) newErrors.images = "Lot must have at least one image";
-
+    if (!hasImages) newErrors.images = "Image required";
     return newErrors;
   };
 
@@ -175,13 +151,11 @@ function LotSettingsPage() {
       return;
     }
     setErrors({});
-
     const fd = new FormData();
     fd.append("Title", title);
     fd.append("CategoryId", category!.id.toString());
     fd.append("PickupPlace", pickupPlace);
     fd.append("Description", description);
-
     const dateObj = new Date(startDate);
     const utcDate = new Date(
       Date.UTC(
@@ -194,21 +168,17 @@ function LotSettingsPage() {
       ),
     );
     fd.append("StartDate", utcDate.toISOString());
-
     fd.append("Duration", Number(duration).toString());
     fd.append(
       "ReservePrice",
       reservePrice ? Number(reservePrice).toString() : "0",
     );
-
     images.forEach((img) => fd.append("Images", img));
-
     if (isEditMode) {
       deletedImageIds.forEach((id) =>
         fd.append("DeletedImageIds", id.toString()),
       );
     }
-
     try {
       if (isEditMode) {
         await axiosAuth.put(`/lots/${id}`, fd, {
@@ -220,7 +190,6 @@ function LotSettingsPage() {
           withCredentials: true,
         });
       }
-
       navigate("/my-lots");
     } catch (error) {
       const serverError =
@@ -229,7 +198,6 @@ function LotSettingsPage() {
             error.response?.data ||
             "Server error"
           : "Unknown error";
-
       setErrors({
         server:
           typeof serverError === "string"
@@ -239,11 +207,8 @@ function LotSettingsPage() {
     }
   };
 
-  const borderClass = (fieldName: string) =>
-    errors[fieldName] ? "border-red-500" : "border-white";
-
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white overflow-x-hidden">
       <Header />
       <div className="max-w-[1100px] w-full mx-auto my-6 px-4 md:px-24">
         <h1 className="yeseva text-3xl">
@@ -258,20 +223,27 @@ function LotSettingsPage() {
             </div>
           )}
 
-          <h3 className="noto text-2xl">Lot information</h3>
-          <div className="flex gap-2 my-2">
-            <Input
-              type="text"
-              placeholder="Item name*"
-              customClasses={`bg-white border ${borderClass("title")}`}
-              value={title}
-              maxLength={100}
-              onChange={(e) => {
-                setTitle(e.target.value);
-                clearError("title");
-              }}
-            />
-            <div className="mt-4 w-full">
+          <h3 className="noto text-2xl mb-6">Lot information</h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-4 mb-6 md:mb-4">
+            <div>
+              <Input
+                type="text"
+                placeholder="Item name*"
+                customClasses={`bg-white border ${borderClass("title")}`}
+                value={title}
+                maxLength={100}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  clearError("title");
+                }}
+              />
+              {errors.title && (
+                <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+              )}
+            </div>
+
+            <div className="w-full">
               <Select
                 placeholder="Select category*"
                 items={categories}
@@ -280,59 +252,69 @@ function LotSettingsPage() {
                   setCategory(val);
                   clearError("category");
                 }}
-                customClasses={`border ${borderClass("category")}`}
+                customClasses={`border h-[52px] ${borderClass("category")}`}
               />
+              {errors.category && (
+                <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+              )}
             </div>
           </div>
-          <Input
-            type="text"
-            placeholder="Pick-up place*"
-            customClasses={`bg-white w-1/2 border ${borderClass("pickupPlace")}`}
-            value={pickupPlace}
-            maxLength={100}
-            onChange={(e) => {
-              setPickupPlace(e.target.value);
-              clearError("pickupPlace");
-            }}
-          />
-          <TextArea
-            placeholder="Description"
-            customClasses="bg-white"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <h3 className="noto text-2xl mt-6">Auction settings</h3>
 
-          <div className="flex gap-4 mt-4">
-            <div className="w-1/2">
+          <div className="mb-6 md:mb-4">
+            <Input
+              type="text"
+              placeholder="Pick-up place*"
+              customClasses={`bg-white w-full border ${borderClass("pickupPlace")}`}
+              value={pickupPlace}
+              maxLength={100}
+              onChange={(e) => {
+                setPickupPlace(e.target.value);
+                clearError("pickupPlace");
+              }}
+            />
+            {errors.pickupPlace && (
+              <p className="text-red-500 text-sm mt-1">{errors.pickupPlace}</p>
+            )}
+          </div>
+
+          <div className="mb-6 md:mb-4">
+            <TextArea
+              placeholder="Description"
+              customClasses="bg-white"
+              value={description}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                setDescription(e.target.value)
+              }
+            />
+          </div>
+
+          <h3 className="noto text-2xl mt-8 mb-4">Auction settings</h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-4 items-end mb-6 md:mb-4">
+            <div>
               <label className="noto text-sm text-gray-600 mb-1 block">
                 Starting date*
               </label>
-              <div className="my-2 w-full">
-                <Input
-                  type="date"
-                  min={today}
-                  customClasses={`bg-white border ${borderClass("startDate")}`}
-                  value={startDate}
-                  onChange={(e) => {
-                    setStartDate(e.target.value);
-                    clearError("startDate");
-                  }}
-                />
-              </div>
+              <Input
+                type="date"
+                min={today}
+                customClasses={`bg-white border ${borderClass("startDate")}`}
+                value={startDate}
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                  clearError("startDate");
+                }}
+              />
               {errors.startDate && (
                 <p className="text-red-500 text-sm mt-1">{errors.startDate}</p>
               )}
             </div>
 
-            <div className="w-1/2 relative">
-              <label className="noto text-sm text-gray-600 mb-1 block">
-                Duration (days)*
-              </label>
+            <div className="relative">
               <Input
                 type="number"
                 placeholder="Days duration"
-                customClasses={`bg-white border !my-0 ${borderClass("duration")}`}
+                customClasses={`bg-white border ${borderClass("duration")}`}
                 value={duration}
                 onChange={(e) => {
                   setDuration(e.target.value);
@@ -340,14 +322,14 @@ function LotSettingsPage() {
                 }}
               />
               {errors.duration && (
-                <p className="text-red-500 text-sm mt-1 absolute">
+                <p className="text-red-500 text-sm mt-1 absolute top-full">
                   {errors.duration}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="mt-4 w-full">
+          <div className="w-full mb-6 md:mb-4">
             <Input
               type="number"
               placeholder="Reserve price"
@@ -360,7 +342,7 @@ function LotSettingsPage() {
             )}
           </div>
 
-          <h3 className="noto text-2xl mb-4 mt-4">Images</h3>
+          <h3 className="noto text-2xl mb-4 mt-8">Images</h3>
 
           {isEditMode && existingImages.length > 0 && (
             <div className="mb-4">
@@ -374,12 +356,12 @@ function LotSettingsPage() {
                     <img
                       src={`data:image/jpeg;base64,${img.imageData}`}
                       alt="lot"
-                      className="w-80 h-60 object-cover"
+                      className="w-full h-40 object-cover"
                     />
                     <button
                       onClick={() => handleRemoveExistingImage(img.id)}
                       type="button"
-                      className="absolute top-4 right-4 w-7 h-7 text-white/80 hover:text-white bg-black/30 transition-all hover:bg-black/50 rounded-sm p-px flex items-center justify-center font-bold"
+                      className="absolute top-4 right-4 w-7 h-7 text-white/80 hover:text-white bg-black/30 transition-all hover:bg-black/50 rounded-sm flex items-center justify-center font-bold"
                     >
                       ✕
                     </button>
@@ -399,16 +381,16 @@ function LotSettingsPage() {
           </div>
           {Object.keys(errors).length > 0 && (
             <div className="noto text-red-600 mt-3 text-lg">
-              {Object.values(errors).map((err, idx) => (
-                <p key={idx}>{err}</p>
-              ))}
+              Check errors above.
             </div>
           )}
-          <p className="noto italic mt-4">
+
+          <p className="noto italic mt-4 text-sm text-gray-500">
             Fields ending with "*" are required!
           </p>
+
           <Button
-            customClasses="my-4"
+            customClasses="mt-8 mb-6 w-full md:w-auto px-10"
             variant="secondary"
             onClick={handleSubmit}
           >

@@ -53,9 +53,8 @@ function SortingSelect({ items, value, onChange }: SortingSelectProps) {
           {value ? value.name : "Sort items"}
         </p>
       </button>
-
       <div
-        className={`absolute -right-12 top-12 w-48 bg-white z-20 shadow-lg border border-gray-200 rounded-sm transition-all duration-200 origin-top-right ${
+        className={`absolute right-0 top-full mt-1 w-48 bg-white z-20 shadow-lg border border-gray-200 rounded-sm transition-all duration-200 origin-top-right ${
           isVisible
             ? "opacity-100 scale-100"
             : "opacity-0 scale-95 pointer-events-none"

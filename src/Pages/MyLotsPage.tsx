@@ -32,7 +32,7 @@ function MyLotsPage() {
       await axiosAuth.delete(`/lots/${id}`);
       setLots((prev) => prev.filter((lot) => lot.id !== id));
     } catch (err) {
-      console.error(err); // Логуємо помилку
+      console.error(err);
       alert("Failed to delete lot. It might be already closed.");
     }
   };
@@ -49,7 +49,7 @@ function MyLotsPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white overflow-x-hidden">
       <Header />
 
       <div className="max-w-[1100px] w-full mx-auto my-6 px-4 md:px-24">
