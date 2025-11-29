@@ -15,15 +15,30 @@ function LoginCard() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = async () => {
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const handleLogin = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    setError(null);
+
     if (!email || !password) {
       setError("Email and password are required");
       return;
     }
 
-    try {
-      setError(null);
+    if (!validateEmail(email)) {
+      setError("Invalid email format");
+      return;
+    }
 
+    if (password.length < 5) {
+      setError("Password must be at least 5 characters long");
+      return;
+    }
+
+    try {
       const parser = new UAParser.UAParser();
       const device = parser.getResult();
 
@@ -72,21 +87,31 @@ function LoginCard() {
         BidBout
       </h1>
       <p className="mb-2 noto text-lg">Enter your login info</p>
-      <Input
-        placeholder="Email..."
-        type="text"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <Input
-        placeholder="Password..."
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <Button customClasses="mb-4" onClick={handleLogin}>
-        Log in
-      </Button>
+
+      <form onSubmit={handleLogin} className="flex flex-col w-full">
+        <Input
+          placeholder="Email..."
+          type="text"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setError(null);
+          }}
+        />
+        <Input
+          placeholder="Password..."
+          type="password"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setError(null);
+          }}
+        />
+        <Button customClasses="mb-4" type="submit">
+          Log in
+        </Button>
+      </form>
+
       {error && <p className="text-red-600 mb-2 noto">{error}</p>}
       <p className="my-2 mb-12 sm:text-base text-sm italic noto">
         Don`t have an account?{" "}

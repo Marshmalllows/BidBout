@@ -54,7 +54,7 @@ function Input({
     <div className="w-full">
       <input
         type={type}
-        className={`bg-white ${font ?? "noto"} px-5 py-3 min-h-12 cursor-pointer transition-all w-full h-12 outline-none ${customClasses}`}
+        className={`bg-white ${font ?? "noto"} px-5 py-3 min-h-12 cursor-pointer transition-all w-full h-12.5 outline-none ${customClasses}`}
         {...props}
       />
     </div>

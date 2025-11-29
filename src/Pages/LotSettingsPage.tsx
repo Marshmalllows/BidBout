@@ -44,6 +44,8 @@ function LotSettingsPage() {
 
   const navigate = useNavigate();
 
+  const today = new Date().toISOString().split("T")[0];
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -57,6 +59,28 @@ function LotSettingsPage() {
   }, [axiosGuest]);
 
   useEffect(() => {
+    if (isEditMode) return;
+
+    const fetchUserLocation = async () => {
+      try {
+        const res = await axiosAuth.get("/user/me");
+
+        const parts = [];
+        if (res.data.region) parts.push(res.data.region);
+        if (res.data.city) parts.push(res.data.city);
+
+        if (parts.length > 0) {
+          setPickupPlace(parts.join(", "));
+        }
+      } catch (err) {
+        console.error("Failed to fetch user location:", err);
+      }
+    };
+
+    fetchUserLocation();
+  }, [isEditMode, axiosAuth]);
+
+  useEffect(() => {
     if (!isEditMode) return;
 
     const fetchLotData = async () => {
@@ -66,7 +90,7 @@ function LotSettingsPage() {
 
         setTitle(lot.title);
         setPickupPlace(lot.pickupPlace);
-        setDescription(lot.description);
+        setDescription(lot.description || "");
 
         const startObj = new Date(lot.startDate);
         const isoDate = startObj.toISOString().split("T")[0];
@@ -110,10 +134,33 @@ function LotSettingsPage() {
     const newErrors: ValidationErrors = {};
 
     if (!title.trim()) newErrors.title = "Enter title";
+    else if (title.length > 100)
+      newErrors.title = "Title too long (max 100 chars)";
+
     if (!category) newErrors.category = "Select category";
+
     if (!pickupPlace.trim()) newErrors.pickupPlace = "Enter pickup place";
+    else if (pickupPlace.length > 100)
+      newErrors.pickupPlace = "Place name too long";
+
     if (!startDate) newErrors.startDate = "Select start date";
+    else {
+      const selectedDate = new Date(startDate);
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      if (selectedDate < now)
+        newErrors.startDate = "Start date cannot be in the past";
+    }
+
     if (!duration) newErrors.duration = "Enter duration";
+    else {
+      const days = Number(duration);
+      if (days <= 0) newErrors.duration = "Duration must be at least 1 day";
+      else if (days > 30) newErrors.duration = "Duration cannot exceed 30 days";
+    }
+
+    if (reservePrice && Number(reservePrice) < 0)
+      newErrors.reservePrice = "Price cannot be negative";
 
     const hasImages = images.length > 0 || existingImages.length > 0;
     if (!hasImages) newErrors.images = "Lot must have at least one image";
@@ -183,7 +230,12 @@ function LotSettingsPage() {
             "Server error"
           : "Unknown error";
 
-      setErrors({ server: serverError });
+      setErrors({
+        server:
+          typeof serverError === "string"
+            ? serverError
+            : JSON.stringify(serverError),
+      });
     }
   };
 
@@ -213,6 +265,7 @@ function LotSettingsPage() {
               placeholder="Item name*"
               customClasses={`bg-white border ${borderClass("title")}`}
               value={title}
+              maxLength={100}
               onChange={(e) => {
                 setTitle(e.target.value);
                 clearError("title");
@@ -236,6 +289,7 @@ function LotSettingsPage() {
             placeholder="Pick-up place*"
             customClasses={`bg-white w-1/2 border ${borderClass("pickupPlace")}`}
             value={pickupPlace}
+            maxLength={100}
             onChange={(e) => {
               setPickupPlace(e.target.value);
               clearError("pickupPlace");
@@ -248,35 +302,64 @@ function LotSettingsPage() {
             onChange={(e) => setDescription(e.target.value)}
           />
           <h3 className="noto text-2xl mt-6">Auction settings</h3>
-          <div className="flex gap-2 my-2 relative">
-            <Input
-              type="date"
-              customClasses={`bg-white border mt-4 ${borderClass("startDate")}`}
-              value={startDate}
-              onChange={(e) => {
-                setStartDate(e.target.value);
-                clearError("startDate");
-              }}
-            />
+
+          <div className="flex gap-4 mt-4">
+            <div className="w-1/2">
+              <label className="noto text-sm text-gray-600 mb-1 block">
+                Starting date*
+              </label>
+              <div className="my-2 w-full">
+                <Input
+                  type="date"
+                  min={today}
+                  customClasses={`bg-white border ${borderClass("startDate")}`}
+                  value={startDate}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    clearError("startDate");
+                  }}
+                />
+              </div>
+              {errors.startDate && (
+                <p className="text-red-500 text-sm mt-1">{errors.startDate}</p>
+              )}
+            </div>
+
+            <div className="w-1/2 relative">
+              <label className="noto text-sm text-gray-600 mb-1 block">
+                Duration (days)*
+              </label>
+              <Input
+                type="number"
+                placeholder="Days duration"
+                customClasses={`bg-white border !my-0 ${borderClass("duration")}`}
+                value={duration}
+                onChange={(e) => {
+                  setDuration(e.target.value);
+                  clearError("duration");
+                }}
+              />
+              {errors.duration && (
+                <p className="text-red-500 text-sm mt-1 absolute">
+                  {errors.duration}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-4 w-full">
             <Input
               type="number"
-              placeholder="Days duration*"
-              customClasses={`bg-white border ${borderClass("duration")}`}
-              value={duration}
-              onChange={(e) => {
-                setDuration(e.target.value);
-                clearError("duration");
-              }}
+              placeholder="Reserve price"
+              customClasses={`bg-white border ${borderClass("reservePrice")}`}
+              value={reservePrice}
+              onChange={(e) => setReservePrice(e.target.value)}
             />
-            <label className="noto absolute -top-3">Starting date*</label>
+            {errors.reservePrice && (
+              <p className="text-red-500 text-sm mt-1">{errors.reservePrice}</p>
+            )}
           </div>
-          <Input
-            type="number"
-            placeholder="Reserve price"
-            customClasses="bg-white w-1/2"
-            value={reservePrice}
-            onChange={(e) => setReservePrice(e.target.value)}
-          />
+
           <h3 className="noto text-2xl mb-4 mt-4">Images</h3>
 
           {isEditMode && existingImages.length > 0 && (

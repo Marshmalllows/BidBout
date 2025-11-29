@@ -16,9 +16,26 @@ function RegistrationCard() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleRegister = async () => {
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const handleRegister = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    setError(null);
+
     if (!email || !password || !confirmPassword) {
-      setError("Email and password are required");
+      setError("All fields are required");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Invalid email format");
+      return;
+    }
+
+    if (password.length < 5) {
+      setError("Password must be at least 5 characters long");
       return;
     }
 
@@ -28,8 +45,6 @@ function RegistrationCard() {
     }
 
     try {
-      setError(null);
-
       const parser = new UAParser.UAParser();
       const device = parser.getResult();
 
@@ -67,10 +82,13 @@ function RegistrationCard() {
         const status = err.response?.status;
         const message = err.response?.data?.message;
 
-        if (status === 409 || message?.includes("exists")) {
+        if (
+          status === 409 ||
+          (typeof message === "string" && message.includes("exists"))
+        ) {
           setError("User with this email already exists");
         } else {
-          setError(message || "Registration or login failed. Please try again");
+          setError(message || "Registration failed. Please try again");
         }
 
         console.error("Auth error:", {
@@ -94,27 +112,40 @@ function RegistrationCard() {
         BidBout
       </h1>
       <p className="mb-2 noto text-lg">Enter your info</p>
-      <Input
-        placeholder="Email..."
-        type="text"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <Input
-        placeholder="Password..."
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <Input
-        placeholder="Confirm password..."
-        type="password"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-      />
-      <Button customClasses="mb-4" onClick={handleRegister}>
-        Register
-      </Button>
+
+      <form onSubmit={handleRegister} className="flex flex-col w-full">
+        <Input
+          placeholder="Email..."
+          type="text"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setError(null);
+          }}
+        />
+        <Input
+          placeholder="Password..."
+          type="password"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setError(null);
+          }}
+        />
+        <Input
+          placeholder="Confirm password..."
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
+            setError(null);
+          }}
+        />
+        <Button customClasses="mb-4" type="submit">
+          Register
+        </Button>
+      </form>
+
       {error && <p className="text-red-600 mb-2 noto">{error}</p>}
       <p className="mt-2 mb-12 noto italic sm:text-base text-sm">
         Have an existing account?{" "}
