@@ -119,7 +119,7 @@ function SideBar() {
   };
 
   return (
-    <div className="flex flex-col bg-gray-200 w-full md:w-[300px] md:min-h-screen">
+    <div className="flex flex-col bg-gray-200 w-full md:w-[300px] md:min-h-full">
       <div
         className="p-4 flex justify-between items-center md:hidden cursor-pointer bg-gray-300"
         onClick={() => setIsMobileExpanded(!isMobileExpanded)}

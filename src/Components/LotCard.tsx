@@ -196,16 +196,13 @@ function LotCard({
         <h2 className="lora text-4xl md:text-5xl mb-2 text-gray-900 break-words">
           {currentPrice > 0 ? `$ ${currentPrice}` : "No bids"}
         </h2>
-        {reservePrice > 0 && (
-          <h3 className={`noto italic text-lg mb-4 text-gray-500`}>
-            Reserve price ${reservePrice ? "" : "not met"}
-          </h3>
-        )}
-        {!reservePrice && (
-          <h3 className="noto italic text-lg mb-4 text-green-700">
-            No reserve price
-          </h3>
-        )}
+
+        <h3 className="noto italic text-lg mb-4 text-gray-500">
+          {reservePrice > 0
+            ? `Reserve price $${reservePrice}`
+            : "No reserve price"}
+        </h3>
+
         {status !== "closed" ? (
           <>
             <div className="grid grid-cols-3 gap-2 mb-4">
