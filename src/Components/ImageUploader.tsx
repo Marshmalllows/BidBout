@@ -54,6 +54,7 @@ function ImageUploader({ onFilesChange }: ImageUploaderProps) {
 
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) handleFiles(e.target.files);
+    e.target.value = "";
   };
 
   const removeImage = (index: number) => {
