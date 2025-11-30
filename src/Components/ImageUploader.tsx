@@ -57,6 +57,9 @@ function ImageUploader({ onFilesChange }: ImageUploaderProps) {
   };
 
   const removeImage = (index: number) => {
+    const urlToRevoke = previews[index];
+    URL.revokeObjectURL(urlToRevoke);
+
     setFiles((prev) => {
       const updatedFiles = prev.filter((_, i) => i !== index);
       onFilesChange?.(updatedFiles);
@@ -66,8 +69,8 @@ function ImageUploader({ onFilesChange }: ImageUploaderProps) {
   };
 
   useEffect(() => {
-    return () => previews.forEach((url) => URL.revokeObjectURL(url));
-  }, [previews]);
+    return () => previews.forEach(URL.revokeObjectURL);
+  }, []);
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
