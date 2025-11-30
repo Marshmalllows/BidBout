@@ -223,9 +223,9 @@ function LotSettingsPage() {
             </div>
           )}
 
-          <h3 className="noto text-2xl mb-6">Lot information</h3>
+          <h3 className="noto text-2xl mb-8">Lot information</h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-4 mb-6 md:mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-x-4 md:gap-y-6 mb-6 md:mb-6">
             <div>
               <Input
                 type="text"
@@ -260,7 +260,7 @@ function LotSettingsPage() {
             </div>
           </div>
 
-          <div className="mb-6 md:mb-4">
+          <div className="mb-6 md:mb-6">
             <Input
               type="text"
               placeholder="Pick-up place*"
@@ -277,7 +277,7 @@ function LotSettingsPage() {
             )}
           </div>
 
-          <div className="mb-6 md:mb-4">
+          <div className="mb-6 md:mb-6">
             <TextArea
               placeholder="Description"
               customClasses="bg-white"
@@ -290,7 +290,7 @@ function LotSettingsPage() {
 
           <h3 className="noto text-2xl mt-8 mb-4">Auction settings</h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-4 items-end mb-6 md:mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-x-4 md:gap-y-6 items-end mb-6 md:mb-6">
             <div>
               <label className="noto text-sm text-gray-600 mb-1 block">
                 Starting date*
