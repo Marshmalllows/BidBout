@@ -238,9 +238,6 @@ function LotSettingsPage() {
                   clearError("title");
                 }}
               />
-              {errors.title && (
-                <p className="text-red-500 text-sm mt-1">{errors.title}</p>
-              )}
             </div>
 
             <div className="w-full">
@@ -254,9 +251,6 @@ function LotSettingsPage() {
                 }}
                 customClasses={`border h-[52px] ${borderClass("category")}`}
               />
-              {errors.category && (
-                <p className="text-red-500 text-sm mt-1">{errors.category}</p>
-              )}
             </div>
           </div>
 
@@ -272,9 +266,6 @@ function LotSettingsPage() {
                 clearError("pickupPlace");
               }}
             />
-            {errors.pickupPlace && (
-              <p className="text-red-500 text-sm mt-1">{errors.pickupPlace}</p>
-            )}
           </div>
 
           <div className="mb-6 md:mb-6">
@@ -305,9 +296,6 @@ function LotSettingsPage() {
                   clearError("startDate");
                 }}
               />
-              {errors.startDate && (
-                <p className="text-red-500 text-sm mt-1">{errors.startDate}</p>
-              )}
             </div>
 
             <div className="relative">
@@ -321,11 +309,6 @@ function LotSettingsPage() {
                   clearError("duration");
                 }}
               />
-              {errors.duration && (
-                <p className="text-red-500 text-sm mt-1 absolute top-full">
-                  {errors.duration}
-                </p>
-              )}
             </div>
           </div>
 
@@ -337,9 +320,6 @@ function LotSettingsPage() {
               value={reservePrice}
               onChange={(e) => setReservePrice(e.target.value)}
             />
-            {errors.reservePrice && (
-              <p className="text-red-500 text-sm mt-1">{errors.reservePrice}</p>
-            )}
           </div>
 
           <h3 className="noto text-2xl mb-4 mt-8">Images</h3>

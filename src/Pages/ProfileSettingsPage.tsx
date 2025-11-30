@@ -216,7 +216,7 @@ function ProfileSettingsPage() {
           )}
 
           <Button
-            customClasses="mt-8 mb-6 w-full md:w-auto px-10"
+            customClasses="mt-8 mb-6 w-full px-10"
             variant="secondary"
             onClick={handleSubmit}
           >
