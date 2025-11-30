@@ -160,7 +160,7 @@ function SideBar() {
         </div>
 
         <div>
-          <h3 className="text-xl noto mb-1">Price</h3>
+          <h3 className="text-xl noto mb-6">Price</h3>
           <div className="flex gap-2">
             <Input
               placeholder="From"

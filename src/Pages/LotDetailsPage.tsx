@@ -53,8 +53,7 @@ function LotDetailsPage() {
   return (
     <>
       <style>{`body { overflow-x: hidden; }`}</style>
-
-      <div className="flex flex-col min-h-screen bg-white">
+      <div className="flex flex-col min-h-screen bg-white overflow-x-hidden md:overflow-x-visible">
         <Header />
         <div className="pt-6 md:pt-12 relative flex-1 justify-center items-start">
           {lot ? (
@@ -94,7 +93,7 @@ function LotDetailsPage() {
                 </div>
 
                 <div className="relative my-8 isolate">
-                  <div className="absolute top-6 bottom-6 w-[200vw] left-1/2 -translate-x-1/2 bg-gray-200 -z-10 pointer-events-none" />
+                  <div className="absolute top-6 bottom-6 w-screen md:w-[200vw] left-1/2 -translate-x-1/2 bg-gray-200 -z-10 pointer-events-none" />
                   <Collage images={lot.images} />
                 </div>
 
