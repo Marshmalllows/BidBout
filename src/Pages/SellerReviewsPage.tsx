@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { useAuth } from "../Hooks/useAuth.tsx";
 import Button from "../Components/Button.tsx";
 import TextArea from "../Components/TextArea.tsx";
+import { Loader } from "../Components/Loader.tsx"; // Імпорт спінера
 
 type Review = {
   id: number;
@@ -92,15 +93,22 @@ function SellerReviewsPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const myExistingReview = profile?.reviews.find(
+  if (loading) {
+    return (
+      <div className="flex justify-center h-screen items-center bg-white">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return <div className="flex justify-center mt-20">User not found</div>;
+  }
+
+  const myExistingReview = profile.reviews.find(
     (r) => r.reviewerId === Number(user?.id),
   );
   const isMyProfile = user && Number(user.id) === Number(id);
-
-  if (loading)
-    return <div className="flex justify-center mt-20">Loading...</div>;
-  if (!profile)
-    return <div className="flex justify-center mt-20">User not found</div>;
 
   return (
     <div className="flex flex-col min-h-screen bg-white overflow-x-hidden">
