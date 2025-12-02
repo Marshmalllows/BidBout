@@ -5,7 +5,6 @@ import Collage from "../Components/Collage.tsx";
 import { useParams, Link } from "react-router-dom";
 import { useAxios } from "../API/AxiosInstance.ts";
 import { useCallback, useEffect, useState } from "react";
-import { Loader } from "../Components/Loader.tsx";
 import { useAuth } from "../Hooks/useAuth.tsx";
 
 type LotResponse = {
@@ -148,8 +147,29 @@ function LotDetailsPage() {
               </div>
             </div>
           ) : (
-            <div className="w-full h-[60vh] flex items-center justify-center relative z-10">
-              <Loader />
+            <div className="flex flex-col md:flex-row max-w-[1100px] w-full mx-auto items-start gap-8 px-4 md:px-0 relative z-10 pb-10 animate-pulse">
+              <div className="flex-auto w-full md:w-2/3">
+                <div className="h-10 bg-gray-200 rounded w-3/4 mb-4" />
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="h-6 bg-gray-200 rounded w-1/3" />
+                  <div className="h-6 bg-gray-200 rounded w-1/4" />
+                </div>
+
+                <div className="h-96 bg-gray-200 w-full mb-8 rounded-sm" />
+
+                <div className="h-64 bg-gray-200 w-full mb-8 md:hidden rounded-sm" />
+
+                <div className="h-8 bg-gray-200 w-1/2 mb-4 rounded" />
+                <div className="space-y-2 mb-10">
+                  <div className="h-4 bg-gray-200 w-full rounded" />
+                  <div className="h-4 bg-gray-200 w-full rounded" />
+                  <div className="h-4 bg-gray-200 w-5/6 rounded" />
+                </div>
+
+                <div className="h-40 bg-gray-200 w-full rounded-sm" />
+              </div>
+
+              <div className="hidden md:block w-full md:w-1/3 md:min-w-[350px] h-[500px] bg-gray-200 rounded-sm" />
             </div>
           )}
         </div>

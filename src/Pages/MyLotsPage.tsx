@@ -61,7 +61,32 @@ function MyLotsPage() {
       <div className="bg-gray-200 w-full flex-1 pb-10">
         <div className="max-w-[1100px] w-full mx-auto py-6 px-4 md:px-24">
           {loading ? (
-            <div className="text-center py-10">Loading...</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col bg-white border border-gray-200 rounded-sm overflow-hidden animate-pulse"
+                >
+                  <div className="aspect-square w-full bg-gray-200" />
+
+                  <div className="p-3 flex flex-row items-center justify-between gap-3">
+                    <div className="flex flex-col w-full gap-2 overflow-hidden">
+                      <div className="h-5 bg-gray-200 w-3/4 rounded-sm" />
+                      <div className="h-3 bg-gray-200 w-1/2 rounded-sm" />
+                    </div>
+                    <div className="flex flex-col items-end pl-3 border-l border-gray-100 min-w-max gap-1">
+                      <div className="h-3 bg-gray-200 w-10 rounded-sm" />
+                      <div className="h-6 bg-gray-200 w-14 rounded-sm" />
+                    </div>
+                  </div>
+
+                  <div className="p-2 border-t border-gray-100 flex justify-end gap-2">
+                    <div className="h-8 w-8 bg-gray-200 rounded-sm" />
+                    <div className="h-8 w-8 bg-gray-200 rounded-sm" />
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : lots.length === 0 ? (
             <div className="text-center py-10 text-gray-500 noto">
               You haven't created any lots yet.
@@ -69,7 +94,10 @@ function MyLotsPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {lots.map((lot) => (
-                <div key={lot.id} className="flex flex-col gap-2 group">
+                <div
+                  key={lot.id}
+                  className="flex flex-col gap-2 group animate-[fadeIn_0.5s_ease-in-out_both]"
+                >
                   <LotMainMiniature lot={lot} />
 
                   <div className="flex items-center justify-between bg-white p-2 border border-gray-200 rounded-sm shadow-sm">
@@ -107,6 +135,13 @@ function MyLotsPage() {
           )}
         </div>
       </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }

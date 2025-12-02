@@ -145,12 +145,6 @@ function ProfileSettingsPage() {
       </div>
       <div className="bg-gray-200 w-full flex-1 pb-10">
         <div className="max-w-[1100px] w-full mx-auto my-6 bg-gray-200 px-4 md:px-24">
-          {errors.server && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-              {errors.server}
-            </div>
-          )}
-
           <h3 className="yeseva noto text-2xl mb-6">Public info</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 md:gap-4 mb-6 items-start">
@@ -209,9 +203,9 @@ function ProfileSettingsPage() {
 
           {Object.keys(errors).length > 0 && (
             <div className="noto text-red-600 mt-3 text-lg">
-              {Object.values(errors).map(
-                (err, idx) => err !== errors.server && <p key={idx}>{err}</p>,
-              )}
+              {Object.values(errors).map((err, idx) => (
+                <p key={idx}>{err}</p>
+              ))}
             </div>
           )}
 

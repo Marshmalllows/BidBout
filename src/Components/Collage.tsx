@@ -135,10 +135,27 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
+  const modalRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
+
+    const preventDefault = (e: Event) => {
+      e.preventDefault();
+    };
+
+    const modal = modalRef.current;
+    if (modal) {
+      modal.addEventListener("touchmove", preventDefault, { passive: false });
+      modal.addEventListener("wheel", preventDefault, { passive: false });
+    }
+
     return () => {
       document.body.style.overflow = "unset";
+      if (modal) {
+        modal.removeEventListener("touchmove", preventDefault);
+        modal.removeEventListener("wheel", preventDefault);
+      }
     };
   }, []);
 
@@ -167,11 +184,10 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
   const handleEnd = () => setIsDragging(false);
 
   const onMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
     handleStart(e.clientX, e.clientY);
   };
+
   const onMouseMove = (e: React.MouseEvent) => {
-    e.preventDefault();
     handleMove(e.clientX, e.clientY);
   };
 
@@ -180,6 +196,7 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
       handleStart(e.touches[0].clientX, e.touches[0].clientY);
     }
   };
+
   const onTouchMove = (e: React.TouchEvent) => {
     if (e.touches.length === 1) {
       handleMove(e.touches[0].clientX, e.touches[0].clientY);
@@ -188,6 +205,7 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
 
   return createPortal(
     <div
+      ref={modalRef}
       className="fixed inset-0 z-[99999] bg-black/95 flex items-center justify-center overflow-hidden touch-none"
       onWheel={handleWheel}
     >
