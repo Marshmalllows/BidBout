@@ -52,7 +52,13 @@ function LotDetailsPage() {
 
   return (
     <>
-      <style>{`body { overflow-x: hidden; }`}</style>
+      <style>{`
+        html, body { 
+          overflow-x: hidden; 
+          max-width: 100%;
+        }
+      `}</style>
+
       <div className="flex flex-col min-h-screen bg-white overflow-x-hidden md:overflow-x-visible">
         <Header />
         <div className="pt-6 md:pt-12 relative flex-1 justify-center items-start">

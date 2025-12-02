@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom"; // 1. Імпортуємо портал
+import { createPortal } from "react-dom";
 
 interface CollageProps {
   images: {
@@ -193,21 +193,17 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
     >
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 z-[100000] text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all cursor-pointer"
+        className="absolute top-4 right-4 z-[100000] text-white bg-black/50 p-2 rounded-full hover:bg-white/20 transition cursor-pointer"
       >
         <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
+          width="24"
+          height="24"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          strokeWidth="2"
         >
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
+          <path d="M18 6L6 18M6 6l12 12" />
         </svg>
       </button>
 
