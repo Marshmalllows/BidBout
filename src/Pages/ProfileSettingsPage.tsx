@@ -1,6 +1,7 @@
 import Header from "../Components/Header.tsx";
 import Input from "../Components/Input.tsx";
 import Button from "../Components/Button.tsx";
+import { Loader } from "../Components/Loader.tsx";
 import { useAxios } from "../API/AxiosInstance.ts";
 import { useEffect, useState } from "react";
 import { AxiosError } from "axios";
@@ -131,8 +132,8 @@ function ProfileSettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center mt-10 min-h-screen items-center">
-        Loading...
+      <div className="flex justify-center min-h-screen items-center bg-white">
+        <Loader />
       </div>
     );
   }
