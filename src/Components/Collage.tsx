@@ -14,7 +14,7 @@ function Collage({ images }: CollageProps) {
   const visibleCount = 3;
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Стан для модального вікна
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const updateStartIndex = (newSelected: number) => {
@@ -56,7 +56,7 @@ function Collage({ images }: CollageProps) {
       <div className="flex flex-col items-center w-full">
         <div
           className="h-96 w-full overflow-hidden border border-gray-400 bg-gray-100 cursor-zoom-in"
-          onClick={() => setIsModalOpen(true)} // Відкриваємо модалку при кліку
+          onClick={() => setIsModalOpen(true)}
         >
           <img
             src={imageSources[selectedIndex]}
@@ -180,26 +180,29 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center overflow-hidden touch-none"
+      className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center overflow-hidden touch-none"
       onWheel={handleWheel}
     >
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-50 text-white bg-black/50 p-2 rounded-full hover:bg-white/20 transition"
+        className="absolute top-4 right-4 z-[10000] text-white bg-black/50 p-2 rounded-full hover:bg-white/20 transition cursor-pointer"
       >
         <svg
-          width="24"
-          height="24"
+          width="32"
+          height="32"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <path d="M18 6L6 18M6 6l12 12" />
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
 
-      <div className="absolute bottom-10 flex gap-4 z-50">
+      <div className="absolute bottom-10 flex gap-4 z-[10000]">
         <button
           onClick={() => setScale((s) => Math.max(1, s - 0.5))}
           className="bg-white/20 text-white p-3 rounded-full hover:bg-white/40 backdrop-blur-sm"
