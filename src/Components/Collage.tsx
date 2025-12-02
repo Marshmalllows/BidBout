@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom"; // 1. Імпортуємо портал
 
 interface CollageProps {
   images: {
@@ -134,6 +135,13 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
   const handleWheel = (e: React.WheelEvent) => {
     e.stopPropagation();
     const newScale = Math.min(Math.max(1, scale + e.deltaY * -0.001), 4);
@@ -178,16 +186,17 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
     }
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center overflow-hidden touch-none"
+      className="fixed inset-0 z-[99999] bg-black/95 flex items-center justify-center overflow-hidden touch-none"
       onWheel={handleWheel}
     >
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-[10000] text-white bg-black/50 p-2 rounded-full hover:bg-white/20 transition cursor-pointer"
+        className="absolute top-6 right-6 z-[100000] text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all cursor-pointer"
       >
         <svg
+          xmlns="http://www.w3.org/2000/svg"
           width="32"
           height="32"
           viewBox="0 0 24 24"
@@ -202,10 +211,10 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
         </svg>
       </button>
 
-      <div className="absolute bottom-10 flex gap-4 z-[10000]">
+      <div className="absolute bottom-10 flex gap-6 z-[100000]">
         <button
           onClick={() => setScale((s) => Math.max(1, s - 0.5))}
-          className="bg-white/20 text-white p-3 rounded-full hover:bg-white/40 backdrop-blur-sm"
+          className="bg-white/20 text-white w-12 h-12 flex items-center justify-center rounded-full hover:bg-white/40 backdrop-blur-sm text-2xl font-bold"
         >
           -
         </button>
@@ -214,13 +223,13 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
             setPosition({ x: 0, y: 0 });
             setScale(1);
           }}
-          className="bg-white/20 text-white px-4 py-3 rounded-full hover:bg-white/40 backdrop-blur-sm text-sm"
+          className="bg-white/20 text-white px-6 py-3 rounded-full hover:bg-white/40 backdrop-blur-sm text-sm font-medium"
         >
           Reset
         </button>
         <button
           onClick={() => setScale((s) => Math.min(4, s + 0.5))}
-          className="bg-white/20 text-white p-3 rounded-full hover:bg-white/40 backdrop-blur-sm"
+          className="bg-white/20 text-white w-12 h-12 flex items-center justify-center rounded-full hover:bg-white/40 backdrop-blur-sm text-2xl font-bold"
         >
           +
         </button>
@@ -251,7 +260,8 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
           }}
         />
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
